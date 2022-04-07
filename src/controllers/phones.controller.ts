@@ -16,7 +16,7 @@ export const getPhones = async (
         brand: true,
       },
     });
-    return res.send(phones);
+    return res.send({ token: res.locals.user.newToken, phones });
   } catch (error) {
     return res.json({ ok: false, msg: error });
   }

@@ -4,6 +4,7 @@ import cors from "cors";
 import { dbConnection } from "./db";
 import phonesRouter from "./routes/Phones.routes";
 import brandsRouter from "./routes/Brands.routes";
+import usersRouter from "./routes/Users.routes";
 
 config();
 
@@ -18,5 +19,6 @@ dbConnection();
 //routes
 app.use("/phones", phonesRouter);
 app.use("/brands", brandsRouter);
+app.use("/users", usersRouter);
 
 export default app;
