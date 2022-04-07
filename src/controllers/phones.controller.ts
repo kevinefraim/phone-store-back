@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
 import { AppDataSource } from "../db";
-import { Phones } from "../entities/Phones";
-import { idValidation } from "../helpers/idValidation";
+import { Phone } from "../entities/Phone";
+import { idValidation, typeValidation } from "../helpers/validations";
 
-const phonesRepo = AppDataSource.getRepository(Phones);
+const phonesRepo = AppDataSource.getRepository(Phone);
 
 //Read ALL the phones
 export const getPhones = async (
@@ -11,7 +11,11 @@ export const getPhones = async (
   res: Response
 ): Promise<Response> => {
   try {
-    const phones = await phonesRepo.find();
+    const phones = await phonesRepo.find({
+      relations: {
+        brand: true,
+      },
+    });
     return res.send(phones);
   } catch (error) {
     return res.json({ ok: false, msg: error });
@@ -24,7 +28,7 @@ export const getPhoneById = async (
   res: Response
 ): Promise<Response> => {
   try {
-    const id = req.params.id;
+    const id = +req.params.id;
     const phone = await phonesRepo.findOneBy({ id });
     idValidation(phone);
     return res.send(phone);
@@ -34,22 +38,25 @@ export const getPhoneById = async (
 };
 
 //create phone
-export const createPhones = async (
+export const createPhone = async (
   req: Request,
   res: Response
 ): Promise<Response> => {
   try {
-    const newPhone = await phonesRepo.save(req.body);
-    return res.status(200).send({ ok: true, Restaurant: newPhone });
+    const newPhone = req.body;
+
+    const phone = await phonesRepo.save(newPhone);
+    typeValidation(phone);
+    return res.status(200).send({ ok: true, phone });
   } catch (error) {
     return res.json({ ok: false, msg: error });
   }
 };
 
 //update phone by ID
-export const updatePhones = async (req: Request, res: Response) => {
+export const updatePhone = async (req: Request, res: Response) => {
   try {
-    const id = req.params.id;
+    const id = +req.params.id;
     const phone = await phonesRepo.findOneBy({ id });
     idValidation(phone);
     phonesRepo.merge(phone, req.body);
@@ -61,12 +68,12 @@ export const updatePhones = async (req: Request, res: Response) => {
 };
 
 //delete phone by ID
-export const deletePhones = async (
+export const deletePhone = async (
   req: Request,
   res: Response
 ): Promise<Response> => {
   try {
-    const id = req.params.id;
+    const id = +req.params.id;
     const deletedPhone = await phonesRepo.findOneBy({ id });
     idValidation(deletedPhone);
     await phonesRepo.remove(deletedPhone);

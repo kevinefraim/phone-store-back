@@ -1,15 +1,23 @@
-import { Entity, Column, PrimaryGeneratedColumn } from "typeorm";
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  JoinColumn,
+} from "typeorm";
+import { Brand } from "./Brand";
 
 @Entity()
-export class Phones {
+export class Phone {
   @PrimaryGeneratedColumn()
-  id: string;
+  id: number;
 
   @Column()
   name: string;
 
-  @Column()
-  brand: string;
+  @ManyToOne(() => Brand, (brand) => brand.id)
+  @JoinColumn()
+  brand: Brand;
 
   @Column()
   description: string;
