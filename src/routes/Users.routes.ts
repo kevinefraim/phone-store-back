@@ -9,6 +9,7 @@ import {
 } from "../controllers/user.controllers";
 
 const router = Router();
+
 router.post("/register", registerUser);
 router.post("/login", loginUser);
 router.get("/", readUsers);

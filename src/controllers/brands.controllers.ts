@@ -13,7 +13,7 @@ export const getBrands = async (
 ): Promise<Response> => {
   try {
     const brands = await brandsRepo.find();
-    return res.send(brands);
+    return res.send({ token: res.locals.user.newToken, brands });
   } catch (error) {
     return res.json({ ok: false, msg: error });
   }
@@ -28,7 +28,7 @@ export const getBrandById = async (
     const id = +req.params.id;
     const brand = await brandsRepo.findOneBy({ id });
     idValidation(brand);
-    return res.send(brand);
+    return res.send({ token: res.locals.user.newToken, brand });
   } catch (error) {
     return res.json({ ok: false, msg: error });
   }
@@ -44,7 +44,9 @@ export const createBrand = async (
 
     const brand = await brandsRepo.save(newBrand);
 
-    return res.status(200).send({ ok: true, brand });
+    return res
+      .status(200)
+      .send({ ok: true, token: res.locals.user.newToken, brand });
   } catch (error) {
     return res.json({ ok: false, msg: error });
   }
@@ -58,7 +60,7 @@ export const updateBrand = async (req: Request, res: Response) => {
     idValidation(brand);
     brandsRepo.merge(brand, req.body);
     const updatedBrand = await brandsRepo.save(brand);
-    return res.send(updatedBrand);
+    return res.send({ token: res.locals.user.newToken, updatedBrand });
   } catch (error) {
     return res.json({ ok: false, msg: error });
   }
@@ -77,7 +79,7 @@ export const deleteBrand = async (
       throw "No se puede eliminar la marca, está asociada a un celular";
     });
 
-    return res.send(deletedBrand);
+    return res.send({ token: res.locals.user.newToken, deletedBrand });
   } catch (error) {
     return res.json({ ok: false, msg: error });
   }
