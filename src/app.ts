@@ -2,6 +2,7 @@ import { config } from "dotenv";
 import express from "express";
 import cors from "cors";
 import { dbConnection } from "./db";
+import phonesRouter from "./routes/Phones.routes";
 
 config();
 
@@ -12,5 +13,8 @@ app.use(express.json());
 
 //DB connection
 dbConnection();
+
+//routes
+app.use("/phones", phonesRouter);
 
 export default app;
