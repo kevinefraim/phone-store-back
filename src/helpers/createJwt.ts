@@ -1,8 +1,8 @@
 import jwt from "jsonwebtoken";
 
-import { userVerify } from "../types";
+import { userTokenPayload } from "../types";
 
-export const createJwt = (user: userVerify) => {
+export const createJwt = (user: userTokenPayload) => {
   return new Promise((resolve, reject) => {
     const payload = { id: user.id, email: user.email };
 

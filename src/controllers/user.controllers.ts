@@ -3,7 +3,7 @@ import { AppDataSource } from "../db";
 import { User } from "../entities/User";
 import { createJwt } from "../helpers/createJwt";
 import { comparePass, cryptPass } from "../helpers/cryptPass";
-import { userVerify } from "../types";
+import { userTokenPayload } from "../types";
 
 const userRepo = AppDataSource.getRepository(User);
 
@@ -23,19 +23,28 @@ const registerUser = async (req: Request, res: Response): Promise<Response> => {
     return res.json({ ok: false, msg: error });
   }
 };
+
 const loginUser = async (req: Request, res: Response): Promise<Response> => {
+  //user that tries to login
   const user = req.body;
   try {
+    //user that exists with email
     const userExist = await userRepo.findOneBy({ email: user.email });
 
+    //validating if the email entered is registered
     if (!userExist) throw "El usuario no existe";
 
+    //comparing password entered with password registered
     const isValidPass = comparePass(user.password, userExist.password);
     if (!isValidPass) throw "Los datos son incorrectos";
-    const verifiedUser: userVerify = {
+
+    //creating token payload with ID and Email
+    const verifiedUser: userTokenPayload = {
       id: userExist.id,
       email: userExist.email,
     };
+
+    //creating token payload
     const token = await createJwt(verifiedUser);
     return res.json({ ok: true, id: userExist.id, msg: "logged", token });
   } catch (error) {

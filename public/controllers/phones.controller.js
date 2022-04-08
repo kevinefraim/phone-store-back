@@ -9,16 +9,20 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deletePhones = exports.updatePhones = exports.createPhones = exports.getPhoneById = exports.getPhones = void 0;
+exports.deletePhone = exports.updatePhone = exports.createPhone = exports.getPhoneById = exports.getPhones = void 0;
 const db_1 = require("../db");
-const Phones_1 = require("../entities/Phones");
-const idValidation_1 = require("../helpers/idValidation");
-const phonesRepo = db_1.AppDataSource.getRepository(Phones_1.Phones);
+const Phone_1 = require("../entities/Phone");
+const validations_1 = require("../helpers/validations");
+const phonesRepo = db_1.AppDataSource.getRepository(Phone_1.Phone);
 //Read ALL the phones
 const getPhones = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const phones = yield phonesRepo.find();
-        return res.send(phones);
+        const phones = yield phonesRepo.find({
+            relations: {
+                brand: true,
+            },
+        });
+        return res.send({ token: res.locals.user.newToken, phones });
     }
     catch (error) {
         return res.json({ ok: false, msg: error });
@@ -28,10 +32,10 @@ exports.getPhones = getPhones;
 //Read ONE phone by ID
 const getPhoneById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const id = req.params.id;
+        const id = +req.params.id;
         const phone = yield phonesRepo.findOneBy({ id });
-        (0, idValidation_1.idValidation)(phone);
-        return res.send(phone);
+        (0, validations_1.idValidation)(phone);
+        return res.send({ token: res.locals.user.newToken, phone });
     }
     catch (error) {
         return res.json({ ok: false, msg: error });
@@ -39,41 +43,46 @@ const getPhoneById = (req, res) => __awaiter(void 0, void 0, void 0, function* (
 });
 exports.getPhoneById = getPhoneById;
 //create phone
-const createPhones = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const createPhone = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const newPhone = yield phonesRepo.save(req.body);
-        return res.status(200).send({ ok: true, Restaurant: newPhone });
+        const newPhone = req.body;
+        const phone = yield phonesRepo.save(newPhone);
+        (0, validations_1.typeValidation)(phone);
+        return res
+            .status(200)
+            .send({ ok: true, token: res.locals.user.newToken, phone });
     }
     catch (error) {
         return res.json({ ok: false, msg: error });
     }
 });
-exports.createPhones = createPhones;
+exports.createPhone = createPhone;
 //update phone by ID
-const updatePhones = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const updatePhone = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const id = req.params.id;
+        const id = +req.params.id;
         const phone = yield phonesRepo.findOneBy({ id });
-        (0, idValidation_1.idValidation)(phone);
+        (0, validations_1.idValidation)(phone);
         phonesRepo.merge(phone, req.body);
         const updatedPhone = yield phonesRepo.save(phone);
-        return res.send(updatedPhone);
+        return res.send({ token: res.locals.user.newToken, updatedPhone });
     }
     catch (error) {
         return res.json({ ok: false, msg: error });
     }
 });
-exports.updatePhones = updatePhones;
+exports.updatePhone = updatePhone;
 //delete phone by ID
-const deletePhones = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const deletePhone = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const id = req.params.id;
+        const id = +req.params.id;
         const deletedPhone = yield phonesRepo.findOneBy({ id });
-        (0, idValidation_1.idValidation)(deletedPhone);
+        (0, validations_1.idValidation)(deletedPhone);
         yield phonesRepo.remove(deletedPhone);
         return res.send({
             ok: true,
             message: `Item ${id} deleted`,
+            token: res.locals.user.newToken,
             item: deletedPhone,
         });
     }
@@ -81,4 +90,4 @@ const deletePhones = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         return res.json({ ok: false, msg: error });
     }
 });
-exports.deletePhones = deletePhones;
+exports.deletePhone = deletePhone;

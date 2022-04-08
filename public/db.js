@@ -12,7 +12,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.dbConnection = exports.AppDataSource = void 0;
 const typeorm_1 = require("typeorm");
 const dotenv_1 = require("dotenv");
-const Phones_1 = require("./entities/Phones");
+const Phone_1 = require("./entities/Phone");
+const Brand_1 = require("./entities/Brand");
+const User_1 = require("./entities/User");
 (0, dotenv_1.config)();
 exports.AppDataSource = new typeorm_1.DataSource({
     type: "mysql",
@@ -21,7 +23,7 @@ exports.AppDataSource = new typeorm_1.DataSource({
     username: process.env.DB_USERNAME,
     password: process.env.DB_PASS,
     database: process.env.DB_DATABASE,
-    entities: [Phones_1.Phones],
+    entities: [Phone_1.Phone, Brand_1.Brand, User_1.User],
     synchronize: true,
     ssl: false,
 });

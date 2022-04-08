@@ -1,7 +1,7 @@
 import { Response, Request, NextFunction } from "express";
 import { createJwt } from "../helpers/createJwt";
 import jwt, { JwtPayload } from "jsonwebtoken";
-import { userVerify } from "../types";
+import { userTokenPayload } from "../types";
 
 export const revToken = async (
   req: Request,
@@ -18,7 +18,7 @@ export const revToken = async (
     process.env.JWT_SECRET_SEED
   ) as JwtPayload;
 
-  const user: userVerify = {
+  const user: userTokenPayload = {
     id,
     email,
   };

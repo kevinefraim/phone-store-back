@@ -1,4 +1,4 @@
-export interface userVerify {
+export interface userTokenPayload {
   id: number;
   email: string;
 }

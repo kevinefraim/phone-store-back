@@ -2,10 +2,12 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const phones_controller_1 = require("../controllers/phones.controller");
+const revToken_1 = require("../middlewares/revToken");
 const router = (0, express_1.Router)();
+router.use(revToken_1.revToken);
 router.get("/", phones_controller_1.getPhones);
 router.get("/:id", phones_controller_1.getPhoneById);
-router.post("/create", phones_controller_1.createPhones);
-router.put("/update/:id", phones_controller_1.updatePhones);
-router.delete("/delete/:id", phones_controller_1.deletePhones);
+router.post("/create", phones_controller_1.createPhone);
+router.put("/update/:id", phones_controller_1.updatePhone);
+router.delete("/delete/:id", phones_controller_1.deletePhone);
 exports.default = router;
