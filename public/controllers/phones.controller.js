@@ -22,7 +22,7 @@ const getPhones = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 brand: true,
             },
         });
-        return res.send({ token: res.locals.user.newToken, phones });
+        return res.send({ phones });
     }
     catch (error) {
         return res.json({ ok: false, msg: error });
@@ -35,7 +35,7 @@ const getPhoneById = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         const id = +req.params.id;
         const phone = yield phonesRepo.findOneBy({ id });
         (0, validations_1.idValidation)(phone);
-        return res.send({ token: res.locals.user.newToken, phone });
+        return res.send({ phone });
     }
     catch (error) {
         return res.json({ ok: false, msg: error });
@@ -48,9 +48,7 @@ const createPhone = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         const newPhone = req.body;
         const phone = yield phonesRepo.save(newPhone);
         (0, validations_1.typeValidation)(phone);
-        return res
-            .status(200)
-            .send({ ok: true, token: res.locals.user.newToken, phone });
+        return res.status(200).send({ ok: true, phone });
     }
     catch (error) {
         return res.json({ ok: false, msg: error });
@@ -65,7 +63,7 @@ const updatePhone = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         (0, validations_1.idValidation)(phone);
         phonesRepo.merge(phone, req.body);
         const updatedPhone = yield phonesRepo.save(phone);
-        return res.send({ token: res.locals.user.newToken, updatedPhone });
+        return res.send({ updatedPhone });
     }
     catch (error) {
         return res.json({ ok: false, msg: error });
@@ -82,7 +80,6 @@ const deletePhone = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         return res.send({
             ok: true,
             message: `Item ${id} deleted`,
-            token: res.locals.user.newToken,
             item: deletedPhone,
         });
     }

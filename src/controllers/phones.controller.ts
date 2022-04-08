@@ -16,6 +16,7 @@ export const getPhones = async (
         brand: true,
       },
     });
+
     return res.send({ phones });
   } catch (error) {
     return res.json({ ok: false, msg: error });
@@ -47,6 +48,7 @@ export const createPhone = async (
 
     const phone = await phonesRepo.save(newPhone);
     typeValidation(phone);
+
     return res.status(200).send({ ok: true, phone });
   } catch (error) {
     return res.json({ ok: false, msg: error });

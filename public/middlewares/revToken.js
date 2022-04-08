@@ -13,19 +13,22 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.revToken = void 0;
-const createJwt_1 = require("../helpers/createJwt");
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const revToken = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const token = req.header("x-token");
-    if (!token)
-        return res.status(401).json({ ok: false, msg: "no está autorizado" });
-    const { id, email } = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET_SEED);
-    const user = {
-        id,
-        email,
-    };
-    const newToken = yield (0, createJwt_1.createJwt)(user);
-    res.locals.user = Object.assign(Object.assign({}, user), { newToken });
-    next();
+    try {
+        if (!token)
+            return res.status(401).json({ ok: false, msg: "no está autorizado" });
+        const user = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET_SEED, (err, decoded) => {
+            if (err) {
+                throw "token expirado";
+            }
+            res.locals.user = decoded;
+        });
+        next();
+    }
+    catch (error) {
+        return res.status(401).json({ ok: false, msg: error });
+    }
 });
 exports.revToken = revToken;

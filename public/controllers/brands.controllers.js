@@ -18,7 +18,7 @@ const brandsRepo = db_1.AppDataSource.getRepository(Brand_1.Brand);
 const getBrands = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const brands = yield brandsRepo.find();
-        return res.send({ token: res.locals.user.newToken, brands });
+        return res.send({ brands });
     }
     catch (error) {
         return res.json({ ok: false, msg: error });
@@ -31,7 +31,7 @@ const getBrandById = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         const id = +req.params.id;
         const brand = yield brandsRepo.findOneBy({ id });
         (0, validations_1.idValidation)(brand);
-        return res.send({ token: res.locals.user.newToken, brand });
+        return res.send({ brand });
     }
     catch (error) {
         return res.json({ ok: false, msg: error });
@@ -43,9 +43,7 @@ const createBrand = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     try {
         const newBrand = req.body;
         const brand = yield brandsRepo.save(newBrand);
-        return res
-            .status(200)
-            .send({ ok: true, token: res.locals.user.newToken, brand });
+        return res.status(200).send({ ok: true, brand });
     }
     catch (error) {
         return res.json({ ok: false, msg: error });
@@ -60,7 +58,7 @@ const updateBrand = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         (0, validations_1.idValidation)(brand);
         brandsRepo.merge(brand, req.body);
         const updatedBrand = yield brandsRepo.save(brand);
-        return res.send({ token: res.locals.user.newToken, updatedBrand });
+        return res.send({ updatedBrand });
     }
     catch (error) {
         return res.json({ ok: false, msg: error });
@@ -76,7 +74,7 @@ const deleteBrand = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         yield brandsRepo.remove(deletedBrand).catch(() => {
             throw "No se puede eliminar la marca, está asociada a un celular";
         });
-        return res.send({ token: res.locals.user.newToken, deletedBrand });
+        return res.send({ deletedBrand });
     }
     catch (error) {
         return res.json({ ok: false, msg: error });
