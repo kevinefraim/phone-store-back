@@ -16,7 +16,7 @@ export const getPhones = async (
         brand: true,
       },
     });
-    return res.send({ token: res.locals.user.newToken, phones });
+    return res.send({ phones });
   } catch (error) {
     return res.json({ ok: false, msg: error });
   }
@@ -31,7 +31,7 @@ export const getPhoneById = async (
     const id = +req.params.id;
     const phone = await phonesRepo.findOneBy({ id });
     idValidation(phone);
-    return res.send({ token: res.locals.user.newToken, phone });
+    return res.send({ phone });
   } catch (error) {
     return res.json({ ok: false, msg: error });
   }
@@ -47,9 +47,7 @@ export const createPhone = async (
 
     const phone = await phonesRepo.save(newPhone);
     typeValidation(phone);
-    return res
-      .status(200)
-      .send({ ok: true, token: res.locals.user.newToken, phone });
+    return res.status(200).send({ ok: true, phone });
   } catch (error) {
     return res.json({ ok: false, msg: error });
   }
@@ -63,7 +61,7 @@ export const updatePhone = async (req: Request, res: Response) => {
     idValidation(phone);
     phonesRepo.merge(phone, req.body);
     const updatedPhone = await phonesRepo.save(phone);
-    return res.send({ token: res.locals.user.newToken, updatedPhone });
+    return res.send({ updatedPhone });
   } catch (error) {
     return res.json({ ok: false, msg: error });
   }
@@ -82,7 +80,7 @@ export const deletePhone = async (
     return res.send({
       ok: true,
       message: `Item ${id} deleted`,
-      token: res.locals.user.newToken,
+
       item: deletedPhone,
     });
   } catch (error) {

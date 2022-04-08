@@ -10,7 +10,7 @@ export const createJwt = (user: userTokenPayload) => {
       payload,
       process.env.JWT_SECRET_SEED,
       {
-        expiresIn: "1h",
+        expiresIn: "2h",
       },
       (error, token) => {
         if (error) {

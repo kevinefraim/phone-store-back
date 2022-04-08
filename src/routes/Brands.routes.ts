@@ -7,14 +7,15 @@ import {
   updateBrand,
 } from "../controllers/brands.controllers";
 import { revToken } from "../middlewares/revToken";
+import { validateAdmin } from "../middlewares/validateAdmin";
 
 const router = Router();
 
 router.use(revToken);
 router.get("/", getBrands);
 router.get("/:id", getBrandById);
-router.post("/create", createBrand);
-router.put("/update/:id", updateBrand);
-router.delete("/delete/:id", deleteBrand);
+router.post("/create", validateAdmin, createBrand);
+router.put("/update/:id", validateAdmin, updateBrand);
+router.delete("/delete/:id", validateAdmin, deleteBrand);
 
 export default router;
