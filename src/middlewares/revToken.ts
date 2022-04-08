@@ -7,20 +7,23 @@ export const revToken = async (
   next: NextFunction
 ) => {
   const token = req.header("x-token");
+  try {
+    if (!token)
+      return res.status(401).json({ ok: false, msg: "no está autorizado" });
 
-  if (!token)
-    return res.status(401).json({ ok: false, msg: "no está autorizado" });
-
-  const user = jwt.verify(
-    token,
-    process.env.JWT_SECRET_SEED,
-    (err, decoded) => {
-      if (err) {
-        return res.status(401).json({ ok: false, msg: "token expirado" });
+    const user = jwt.verify(
+      token,
+      process.env.JWT_SECRET_SEED,
+      (err, decoded) => {
+        if (err) {
+          throw "token expirado";
+        }
+        res.locals.user = decoded;
       }
-      res.locals.user = decoded;
-    }
-  );
+    );
 
-  next();
+    next();
+  } catch (error) {
+    return res.status(401).json({ ok: false, msg: error });
+  }
 };
