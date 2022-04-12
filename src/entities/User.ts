@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from "typeorm";
+import { CartItem } from "./CartItem";
 
 @Entity()
 export class User {
@@ -24,6 +25,9 @@ export class User {
     default: false,
   })
   isAdmin: boolean;
+
+  @OneToMany(() => CartItem, (cartItem) => cartItem.id)
+  cartItem: CartItem[];
 
   @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
   created_at: string;

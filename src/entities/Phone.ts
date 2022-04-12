@@ -4,8 +4,10 @@ import {
   PrimaryGeneratedColumn,
   ManyToOne,
   JoinColumn,
+  OneToMany,
 } from "typeorm";
 import { Brand } from "./Brand";
+import { CartItem } from "./CartItem";
 
 @Entity()
 export class Phone {
@@ -30,6 +32,9 @@ export class Phone {
 
   @Column()
   image: string;
+
+  @OneToMany(() => CartItem, (item) => item.id)
+  item: CartItem[];
 
   @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
   created_at: string;

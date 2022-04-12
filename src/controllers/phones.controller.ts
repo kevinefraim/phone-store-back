@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { AppDataSource } from "../db";
 import { Phone } from "../entities/Phone";
-import { idValidation, typeValidation } from "../helpers/validations";
+import { idValidation } from "../helpers/validations";
 
 const phonesRepo = AppDataSource.getRepository(Phone);
 
@@ -47,7 +47,6 @@ export const createPhone = async (
     const newPhone = req.body;
 
     const phone = await phonesRepo.save(newPhone);
-    typeValidation(phone);
 
     return res.status(200).send({ ok: true, phone });
   } catch (error) {

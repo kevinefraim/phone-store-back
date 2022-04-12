@@ -6,6 +6,7 @@ import { dbConnection } from "./db";
 import phonesRouter from "./routes/Phones.routes";
 import brandsRouter from "./routes/Brands.routes";
 import usersRouter from "./routes/Users.routes";
+import itemsRouter from "./routes/CartItem.routes";
 
 config();
 
@@ -21,5 +22,6 @@ dbConnection();
 app.use("/phones", phonesRouter);
 app.use("/brands", brandsRouter);
 app.use("/users", usersRouter);
+app.use("/items", itemsRouter);
 
 export default app;
