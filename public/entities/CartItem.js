@@ -9,50 +9,31 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.User = void 0;
+exports.CartItem = void 0;
 const typeorm_1 = require("typeorm");
-const CartItem_1 = require("./CartItem");
-let User = class User {
+const Phone_1 = require("./Phone");
+const User_1 = require("./User");
+let CartItem = class CartItem {
 };
 __decorate([
     (0, typeorm_1.PrimaryGeneratedColumn)(),
     __metadata("design:type", Number)
-], User.prototype, "id", void 0);
+], CartItem.prototype, "id", void 0);
 __decorate([
-    (0, typeorm_1.Column)(),
-    __metadata("design:type", String)
-], User.prototype, "email", void 0);
+    (0, typeorm_1.ManyToOne)(() => Phone_1.Phone, (phone) => phone.id),
+    (0, typeorm_1.JoinColumn)(),
+    __metadata("design:type", Phone_1.Phone)
+], CartItem.prototype, "phone", void 0);
 __decorate([
-    (0, typeorm_1.Column)(),
-    __metadata("design:type", String)
-], User.prototype, "name", void 0);
-__decorate([
-    (0, typeorm_1.Column)(),
-    __metadata("design:type", String)
-], User.prototype, "last_name", void 0);
-__decorate([
-    (0, typeorm_1.Column)(),
-    __metadata("design:type", String)
-], User.prototype, "birth_date", void 0);
-__decorate([
-    (0, typeorm_1.Column)(),
-    __metadata("design:type", String)
-], User.prototype, "password", void 0);
-__decorate([
-    (0, typeorm_1.Column)({
-        default: false,
-    }),
-    __metadata("design:type", Boolean)
-], User.prototype, "isAdmin", void 0);
-__decorate([
-    (0, typeorm_1.OneToMany)(() => CartItem_1.CartItem, (cartItem) => cartItem.id),
-    __metadata("design:type", Array)
-], User.prototype, "cartItem", void 0);
+    (0, typeorm_1.ManyToOne)(() => User_1.User, (user) => user.id),
+    (0, typeorm_1.JoinColumn)(),
+    __metadata("design:type", User_1.User)
+], CartItem.prototype, "user", void 0);
 __decorate([
     (0, typeorm_1.Column)({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" }),
     __metadata("design:type", String)
-], User.prototype, "created_at", void 0);
-User = __decorate([
+], CartItem.prototype, "created_at", void 0);
+CartItem = __decorate([
     (0, typeorm_1.Entity)()
-], User);
-exports.User = User;
+], CartItem);
+exports.CartItem = CartItem;

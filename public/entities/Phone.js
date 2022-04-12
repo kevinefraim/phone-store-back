@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Phone = void 0;
 const typeorm_1 = require("typeorm");
 const Brand_1 = require("./Brand");
+const CartItem_1 = require("./CartItem");
 let Phone = class Phone {
 };
 __decorate([
@@ -43,6 +44,10 @@ __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", String)
 ], Phone.prototype, "image", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(() => CartItem_1.CartItem, (item) => item.id),
+    __metadata("design:type", Array)
+], Phone.prototype, "item", void 0);
 __decorate([
     (0, typeorm_1.Column)({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" }),
     __metadata("design:type", String)

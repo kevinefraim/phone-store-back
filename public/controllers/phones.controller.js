@@ -47,7 +47,6 @@ const createPhone = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     try {
         const newPhone = req.body;
         const phone = yield phonesRepo.save(newPhone);
-        (0, validations_1.typeValidation)(phone);
         return res.status(200).send({ ok: true, phone });
     }
     catch (error) {
