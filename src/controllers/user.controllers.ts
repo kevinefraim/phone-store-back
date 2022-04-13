@@ -53,7 +53,13 @@ const loginUser = async (req: Request, res: Response): Promise<Response> => {
 };
 
 const readUsers = async (req: Request, res: Response): Promise<Response> => {
-  return res.send("users");
+  try {
+    const users = await userRepo.find();
+
+    return res.send({ users });
+  } catch (error) {
+    return res.json({ ok: false, msg: error });
+  }
 };
 const readUserById = async (req: Request, res: Response): Promise<Response> => {
   return res;

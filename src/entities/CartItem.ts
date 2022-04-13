@@ -22,6 +22,9 @@ export class CartItem {
   @JoinColumn()
   user: User;
 
+  @Column({ default: 1 })
+  quantity: Number;
+
   @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
   created_at: string;
 }
