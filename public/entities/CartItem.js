@@ -20,15 +20,19 @@ __decorate([
     __metadata("design:type", Number)
 ], CartItem.prototype, "id", void 0);
 __decorate([
-    (0, typeorm_1.ManyToOne)(() => Phone_1.Phone, (phone) => phone.id),
+    (0, typeorm_1.ManyToOne)(() => Phone_1.Phone, (phone) => phone.item),
     (0, typeorm_1.JoinColumn)(),
     __metadata("design:type", Phone_1.Phone)
 ], CartItem.prototype, "phone", void 0);
 __decorate([
-    (0, typeorm_1.ManyToOne)(() => User_1.User, (user) => user.id),
+    (0, typeorm_1.ManyToOne)(() => User_1.User, (user) => user.cartItem),
     (0, typeorm_1.JoinColumn)(),
     __metadata("design:type", User_1.User)
 ], CartItem.prototype, "user", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ default: 1 }),
+    __metadata("design:type", Number)
+], CartItem.prototype, "quantity", void 0);
 __decorate([
     (0, typeorm_1.Column)({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" }),
     __metadata("design:type", String)

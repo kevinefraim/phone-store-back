@@ -17,7 +17,7 @@ export class Phone {
   @Column()
   name: string;
 
-  @ManyToOne(() => Brand, (brand) => brand.id)
+  @ManyToOne(() => Brand, (brand) => brand.phones)
   @JoinColumn()
   brand: Brand;
 

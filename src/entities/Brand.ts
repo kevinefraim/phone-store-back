@@ -9,9 +9,9 @@ export class Brand {
   @Column()
   name: string;
 
+  @OneToMany(() => Phone, (phone) => phone.brand)
+  phones: Phone[];
+
   @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
   created_at: string;
-
-  @OneToMany(() => Phone, (phone) => phone.id)
-  phones: Phone[];
 }

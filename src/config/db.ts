@@ -1,9 +1,7 @@
 import { DataSource } from "typeorm";
 import { config } from "dotenv";
-import { Phone } from "./entities/Phone";
-import { Brand } from "./entities/Brand";
-import { User } from "./entities/User";
-import { CartItem } from "./entities/CartItem";
+import { Brand, CartItem, Phone, User } from "../entities";
+
 config();
 export const AppDataSource = new DataSource({
   type: "mysql",

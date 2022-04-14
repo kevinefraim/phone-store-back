@@ -2,7 +2,7 @@ import { config } from "dotenv";
 import express from "express";
 
 import cors from "cors";
-import { dbConnection } from "./db";
+import { dbConnection } from "./config/db";
 import phonesRouter from "./routes/Phones.routes";
 import brandsRouter from "./routes/Brands.routes";
 import usersRouter from "./routes/Users.routes";

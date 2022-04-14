@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { AppDataSource } from "../db";
+import { AppDataSource } from "../config/db";
 import { CartItem } from "../entities/CartItem";
 import { idValidation } from "../helpers/validations";
 

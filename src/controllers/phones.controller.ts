@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { AppDataSource } from "../db";
+import { AppDataSource } from "../config/db";
 import { Phone } from "../entities/Phone";
 import { idValidation } from "../helpers/validations";
 

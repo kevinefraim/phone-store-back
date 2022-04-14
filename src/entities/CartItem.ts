@@ -2,7 +2,6 @@ import {
   Entity,
   Column,
   PrimaryGeneratedColumn,
-  OneToOne,
   JoinColumn,
   ManyToOne,
 } from "typeorm";
@@ -14,11 +13,11 @@ export class CartItem {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => Phone, (phone) => phone.id)
+  @ManyToOne(() => Phone, (phone) => phone.item)
   @JoinColumn()
   phone: Phone;
 
-  @ManyToOne(() => User, (user) => user.id)
+  @ManyToOne(() => User, (user) => user.cartItem)
   @JoinColumn()
   user: User;
 

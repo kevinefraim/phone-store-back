@@ -10,7 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.loginUser = exports.deleteUserById = exports.updateUserById = exports.readUserById = exports.readUsers = exports.registerUser = void 0;
-const db_1 = require("../db");
+const db_1 = require("../config/db");
 const User_1 = require("../entities/User");
 const createJwt_1 = require("../helpers/createJwt");
 const cryptPass_1 = require("../helpers/cryptPass");
@@ -59,7 +59,13 @@ const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.loginUser = loginUser;
 const readUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    return res.send("users");
+    try {
+        const users = yield userRepo.find();
+        return res.send({ users });
+    }
+    catch (error) {
+        return res.json({ ok: false, msg: error });
+    }
 });
 exports.readUsers = readUsers;
 const readUserById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {

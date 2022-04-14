@@ -45,7 +45,7 @@ __decorate([
     __metadata("design:type", Boolean)
 ], User.prototype, "isAdmin", void 0);
 __decorate([
-    (0, typeorm_1.OneToMany)(() => CartItem_1.CartItem, (cartItem) => cartItem.id),
+    (0, typeorm_1.OneToMany)(() => CartItem_1.CartItem, (cartItem) => cartItem.user),
     __metadata("design:type", Array)
 ], User.prototype, "cartItem", void 0);
 __decorate([

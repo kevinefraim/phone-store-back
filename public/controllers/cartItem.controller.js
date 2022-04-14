@@ -10,8 +10,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.updateItemById = exports.deleteItemById = exports.createItem = exports.getItemById = exports.getItems = void 0;
-const db_1 = require("../db");
+const db_1 = require("../config/db");
 const CartItem_1 = require("../entities/CartItem");
+const validations_1 = require("../helpers/validations");
 const itemsRepo = db_1.AppDataSource.getRepository(CartItem_1.CartItem);
 const getItems = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -43,9 +44,30 @@ const createItem = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     }
 });
 exports.createItem = createItem;
-const deleteItemById = (req, res) => {
-    return res.send("delete item");
-};
+const deleteItemById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const id = +req.params.id;
+        const deletedItem = yield itemsRepo.findOne({
+            where: {
+                id: id,
+            },
+            relations: {
+                user: true,
+                phone: true,
+            },
+        });
+        (0, validations_1.idValidation)(deletedItem);
+        yield itemsRepo.remove(deletedItem);
+        return res.send({
+            ok: true,
+            message: `Item ${id} deleted`,
+            item: deletedItem,
+        });
+    }
+    catch (error) {
+        return res.json({ ok: false, msg: error });
+    }
+});
 exports.deleteItemById = deleteItemById;
 const updateItemById = (req, res) => {
     return res.send("update item");

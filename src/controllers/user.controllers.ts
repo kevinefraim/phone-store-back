@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { AppDataSource } from "../db";
+import { AppDataSource } from "../config/db";
 import { User } from "../entities/User";
 import { createJwt } from "../helpers/createJwt";
 import { comparePass, cryptPass } from "../helpers/cryptPass";

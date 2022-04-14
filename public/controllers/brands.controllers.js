@@ -10,7 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteBrand = exports.updateBrand = exports.createBrand = exports.getBrandById = exports.getBrands = void 0;
-const db_1 = require("../db");
+const db_1 = require("../config/db");
 const Brand_1 = require("../entities/Brand");
 const validations_1 = require("../helpers/validations");
 const brandsRepo = db_1.AppDataSource.getRepository(Brand_1.Brand);
