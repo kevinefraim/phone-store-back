@@ -16,10 +16,13 @@ const validations_1 = require("../helpers/validations");
 const itemsRepo = db_1.AppDataSource.getRepository(CartItem_1.CartItem);
 const getItems = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const items = yield itemsRepo.find({
+        const items = yield itemsRepo.findOne({
+            where: {
+                user: { id: res.locals.user.id },
+            },
             relations: {
-                phone: true,
                 user: true,
+                phone: true,
             },
         });
         return res.send({ items });
@@ -46,9 +49,12 @@ const createItem = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 exports.createItem = createItem;
 const deleteItemById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        res.locals.user;
+        console.log(res.locals.user);
         const id = +req.params.id;
         const deletedItem = yield itemsRepo.findOne({
             where: {
+                user: { id: res.locals.user.id },
                 id: id,
             },
             relations: {

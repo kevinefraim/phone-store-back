@@ -6,9 +6,11 @@ import {
   getItems,
   updateItemById,
 } from "../controllers/cartItem.controller";
+import { revToken } from "../middlewares/revToken";
 
 const router = Router();
 
+router.use(revToken);
 router.get("/", getItems);
 router.get("/:id", getItemById);
 router.post("/create", createItem);

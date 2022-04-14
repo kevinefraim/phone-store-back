@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { userInfo } from "os";
 import { AppDataSource } from "../config/db";
 import { CartItem } from "../entities/CartItem";
 import { idValidation } from "../helpers/validations";
@@ -10,10 +11,13 @@ export const getItems = async (
   res: Response
 ): Promise<Response> => {
   try {
-    const items = await itemsRepo.find({
+    const items = await itemsRepo.findOne({
+      where: {
+        user: { id: res.locals.user.id },
+      },
       relations: {
-        phone: true,
         user: true,
+        phone: true,
       },
     });
 
@@ -42,9 +46,13 @@ export const createItem = async (
 };
 export const deleteItemById = async (req: Request, res: Response) => {
   try {
+    res.locals.user;
+    console.log(res.locals.user);
+
     const id = +req.params.id;
     const deletedItem = await itemsRepo.findOne({
       where: {
+        user: { id: res.locals.user.id },
         id: id,
       },
       relations: {

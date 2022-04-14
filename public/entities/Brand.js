@@ -23,13 +23,13 @@ __decorate([
     __metadata("design:type", String)
 ], Brand.prototype, "name", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" }),
-    __metadata("design:type", String)
-], Brand.prototype, "created_at", void 0);
-__decorate([
     (0, typeorm_1.OneToMany)(() => Phone_1.Phone, (phone) => phone.brand),
     __metadata("design:type", Array)
 ], Brand.prototype, "phones", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" }),
+    __metadata("design:type", String)
+], Brand.prototype, "created_at", void 0);
 Brand = __decorate([
     (0, typeorm_1.Entity)()
 ], Brand);
