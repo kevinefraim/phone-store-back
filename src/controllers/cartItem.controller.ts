@@ -11,7 +11,7 @@ export const getItems = async (
   res: Response
 ): Promise<Response> => {
   try {
-    const items = await itemsRepo.findOne({
+    const items = await itemsRepo.find({
       where: {
         user: { id: res.locals.user.id },
       },
@@ -26,8 +26,34 @@ export const getItems = async (
     return res.json({ ok: false, msg: error });
   }
 };
-export const getItemById = (req: Request, res: Response) => {
-  return res.send("get one item");
+export const getItemById = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
+  try {
+    res.locals.user;
+    console.log(res.locals.user);
+
+    const id = +req.params.id;
+    const item = await itemsRepo.findOne({
+      where: {
+        user: { id: res.locals.user.id },
+        id: id,
+      },
+      relations: {
+        user: true,
+        phone: true,
+      },
+    });
+    idValidation(item);
+
+    return res.send({
+      ok: true,
+      item,
+    });
+  } catch (error) {
+    return res.json({ ok: false, msg: error });
+  }
 };
 
 export const createItem = async (
@@ -36,7 +62,8 @@ export const createItem = async (
 ): Promise<Response> => {
   try {
     const newItem = req.body;
-
+    if (res.locals.user.id !== req.body.user)
+      throw "El usuario ingresado no coincide con el loggeado";
     const item = await itemsRepo.save(newItem);
 
     return res.status(200).send({ ok: true, item });
@@ -44,7 +71,10 @@ export const createItem = async (
     return res.json({ ok: false, msg: error });
   }
 };
-export const deleteItemById = async (req: Request, res: Response) => {
+export const deleteItemById = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
   try {
     res.locals.user;
     console.log(res.locals.user);
@@ -72,6 +102,19 @@ export const deleteItemById = async (req: Request, res: Response) => {
     return res.json({ ok: false, msg: error });
   }
 };
-export const updateItemById = (req: Request, res: Response) => {
-  return res.send("update item");
+export const updateItemById = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
+  try {
+    const id = +req.params.id;
+    const item = await itemsRepo.findOneBy({ id });
+    idValidation(item);
+
+    itemsRepo.merge(item, req.body);
+    const updatedItem = await itemsRepo.save(item);
+    return res.send({ updatedItem });
+  } catch (error) {
+    return res.json({ ok: false, msg: error });
+  }
 };

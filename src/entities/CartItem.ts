@@ -5,6 +5,7 @@ import {
   JoinColumn,
   ManyToOne,
 } from "typeorm";
+import { Cart } from "./Cart";
 import { Phone } from "./Phone";
 import { User } from "./User";
 
@@ -20,6 +21,10 @@ export class CartItem {
   @ManyToOne(() => User, (user) => user.cartItem)
   @JoinColumn()
   user: User;
+
+  @ManyToOne(() => Cart, (cart) => cart.item)
+  @JoinColumn()
+  cart: Cart;
 
   @Column({ default: 1 })
   quantity: Number;
