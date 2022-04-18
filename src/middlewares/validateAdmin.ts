@@ -10,14 +10,14 @@ export const validateAdmin = async (
   const { id } = res.locals.user;
 
   const { isAdmin } = await AppDataSource.getRepository(User).findOneBy({ id });
-  console.log(isAdmin);
 
-  if (!isAdmin)
-    return res.status(401).json({
+  if (!isAdmin) {
+    res.status(401).json({
       ok: false,
       msg: "no tiene permiso para realizar esta accion",
       errorCode: 800,
     });
-
-  next();
+  } else {
+    next();
+  }
 };

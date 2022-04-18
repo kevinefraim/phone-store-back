@@ -3,7 +3,9 @@ import { AppDataSource } from "../config/db";
 import { User } from "../entities/User";
 import { createJwt } from "../helpers/createJwt";
 import { comparePass, cryptPass } from "../helpers/cryptPass";
+import { idValidation } from "../helpers/validations";
 import { userTokenPayload } from "../types";
+import { deleteItemById } from "./cartItem.controller";
 
 const userRepo = AppDataSource.getRepository(User);
 
@@ -62,7 +64,14 @@ const readUsers = async (req: Request, res: Response): Promise<Response> => {
   }
 };
 const readUserById = async (req: Request, res: Response): Promise<Response> => {
-  return res;
+  try {
+    const id = +req.params.id;
+    const users = await userRepo.findOneBy({ id });
+
+    return res.send({ users });
+  } catch (error) {
+    return res.json({ ok: false, msg: error });
+  }
 };
 const updateUserById = async (
   req: Request,
@@ -74,7 +83,20 @@ const deleteUserById = async (
   req: Request,
   res: Response
 ): Promise<Response> => {
-  return res;
+  try {
+    const id = +req.params.id;
+    const deletedUser = await userRepo.findOneBy({ id });
+    idValidation(deletedUser);
+    await userRepo.remove(deletedUser);
+    return res.send({
+      ok: true,
+      message: `User with ID: ${id} deleted`,
+
+      item: deletedUser,
+    });
+  } catch (error) {
+    return res.json({ ok: false, msg: error });
+  }
 };
 export {
   registerUser,

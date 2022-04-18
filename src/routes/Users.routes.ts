@@ -7,14 +7,16 @@ import {
   registerUser,
   updateUserById,
 } from "../controllers/user.controllers";
+import { revToken } from "../middlewares/revToken";
+import { validateAdmin } from "../middlewares/validateAdmin";
 
 const router = Router();
 
 router.post("/register", registerUser);
 router.post("/login", loginUser);
-router.get("/", readUsers);
-router.get("/:id", readUserById);
-router.put("/update/:id", updateUserById);
-router.delete("/delete/:id", deleteUserById);
+router.get("/", revToken, validateAdmin, readUsers);
+router.get("/:id", revToken, validateAdmin, readUserById);
+router.put("/update/:id", revToken, validateAdmin, updateUserById);
+router.delete("/delete/:id", revToken, validateAdmin, deleteUserById);
 
 export default router;
