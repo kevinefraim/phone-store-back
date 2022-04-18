@@ -16,7 +16,7 @@ const validations_1 = require("../helpers/validations");
 const itemsRepo = db_1.AppDataSource.getRepository(CartItem_1.CartItem);
 const getItems = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const items = yield itemsRepo.findOne({
+        const items = yield itemsRepo.find({
             where: {
                 user: { id: res.locals.user.id },
             },
@@ -32,13 +32,37 @@ const getItems = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.getItems = getItems;
-const getItemById = (req, res) => {
-    return res.send("get one item");
-};
+const getItemById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        res.locals.user;
+        console.log(res.locals.user);
+        const id = +req.params.id;
+        const item = yield itemsRepo.findOne({
+            where: {
+                user: { id: res.locals.user.id },
+                id: id,
+            },
+            relations: {
+                user: true,
+                phone: true,
+            },
+        });
+        (0, validations_1.idValidation)(item);
+        return res.send({
+            ok: true,
+            item,
+        });
+    }
+    catch (error) {
+        return res.json({ ok: false, msg: error });
+    }
+});
 exports.getItemById = getItemById;
 const createItem = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const newItem = req.body;
+        if (res.locals.user.id !== req.body.user)
+            throw "El usuario ingresado no coincide con el loggeado";
         const item = yield itemsRepo.save(newItem);
         return res.status(200).send({ ok: true, item });
     }
@@ -75,7 +99,17 @@ const deleteItemById = (req, res) => __awaiter(void 0, void 0, void 0, function*
     }
 });
 exports.deleteItemById = deleteItemById;
-const updateItemById = (req, res) => {
-    return res.send("update item");
-};
+const updateItemById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const id = +req.params.id;
+        const item = yield itemsRepo.findOneBy({ id });
+        (0, validations_1.idValidation)(item);
+        itemsRepo.merge(item, req.body);
+        const updatedItem = yield itemsRepo.save(item);
+        return res.send({ updatedItem });
+    }
+    catch (error) {
+        return res.json({ ok: false, msg: error });
+    }
+});
 exports.updateItemById = updateItemById;

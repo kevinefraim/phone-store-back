@@ -9,41 +9,24 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CartItem = void 0;
+exports.Cart = void 0;
 const typeorm_1 = require("typeorm");
-const Cart_1 = require("./Cart");
-const Phone_1 = require("./Phone");
-const User_1 = require("./User");
-let CartItem = class CartItem {
+const CartItem_1 = require("./CartItem");
+let Cart = class Cart {
 };
 __decorate([
     (0, typeorm_1.PrimaryGeneratedColumn)(),
     __metadata("design:type", Number)
-], CartItem.prototype, "id", void 0);
+], Cart.prototype, "id", void 0);
 __decorate([
-    (0, typeorm_1.ManyToOne)(() => Phone_1.Phone, (phone) => phone.item),
-    (0, typeorm_1.JoinColumn)(),
-    __metadata("design:type", Phone_1.Phone)
-], CartItem.prototype, "phone", void 0);
-__decorate([
-    (0, typeorm_1.ManyToOne)(() => User_1.User, (user) => user.cartItem),
-    (0, typeorm_1.JoinColumn)(),
-    __metadata("design:type", User_1.User)
-], CartItem.prototype, "user", void 0);
-__decorate([
-    (0, typeorm_1.ManyToOne)(() => Cart_1.Cart, (cart) => cart.item),
-    (0, typeorm_1.JoinColumn)(),
-    __metadata("design:type", Cart_1.Cart)
-], CartItem.prototype, "cart", void 0);
-__decorate([
-    (0, typeorm_1.Column)({ default: 1 }),
-    __metadata("design:type", Number)
-], CartItem.prototype, "quantity", void 0);
+    (0, typeorm_1.OneToMany)(() => CartItem_1.CartItem, (item) => item.id),
+    __metadata("design:type", Array)
+], Cart.prototype, "item", void 0);
 __decorate([
     (0, typeorm_1.Column)({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" }),
     __metadata("design:type", String)
-], CartItem.prototype, "created_at", void 0);
-CartItem = __decorate([
+], Cart.prototype, "created_at", void 0);
+Cart = __decorate([
     (0, typeorm_1.Entity)()
-], CartItem);
-exports.CartItem = CartItem;
+], Cart);
+exports.Cart = Cart;

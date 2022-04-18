@@ -21,7 +21,7 @@ exports.AppDataSource = new typeorm_1.DataSource({
     username: process.env.DB_USERNAME,
     password: process.env.DB_PASS,
     database: process.env.DB_DATABASE,
-    entities: [entities_1.Phone, entities_1.Brand, entities_1.User, entities_1.CartItem],
+    entities: [entities_1.Phone, entities_1.Brand, entities_1.User, entities_1.CartItem, entities_1.Cart],
     synchronize: true,
     ssl: false,
 });
