@@ -1,5 +1,4 @@
 import { Request, Response } from "express";
-import { userInfo } from "os";
 import { AppDataSource } from "../config/db";
 import { CartItem } from "../entities/CartItem";
 import { idValidation } from "../helpers/validations";
@@ -18,6 +17,7 @@ export const getItems = async (
       relations: {
         user: true,
         phone: true,
+        cart: true,
       },
     });
 
@@ -64,6 +64,7 @@ export const createItem = async (
     const newItem = req.body;
     if (res.locals.user.id !== req.body.user)
       throw "El usuario ingresado no coincide con el loggeado";
+
     const item = await itemsRepo.save(newItem);
 
     return res.status(200).send({ ok: true, item });
@@ -76,7 +77,6 @@ export const deleteItemById = async (
   res: Response
 ): Promise<Response> => {
   try {
-    res.locals.user;
     console.log(res.locals.user);
 
     const id = +req.params.id;

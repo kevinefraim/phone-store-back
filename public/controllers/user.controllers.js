@@ -14,6 +14,7 @@ const db_1 = require("../config/db");
 const User_1 = require("../entities/User");
 const createJwt_1 = require("../helpers/createJwt");
 const cryptPass_1 = require("../helpers/cryptPass");
+const validations_1 = require("../helpers/validations");
 const userRepo = db_1.AppDataSource.getRepository(User_1.User);
 const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const newData = req.body;
@@ -69,7 +70,14 @@ const readUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.readUsers = readUsers;
 const readUserById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    return res;
+    try {
+        const id = +req.params.id;
+        const users = yield userRepo.findOneBy({ id });
+        return res.send({ users });
+    }
+    catch (error) {
+        return res.json({ ok: false, msg: error });
+    }
 });
 exports.readUserById = readUserById;
 const updateUserById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -77,6 +85,19 @@ const updateUserById = (req, res) => __awaiter(void 0, void 0, void 0, function*
 });
 exports.updateUserById = updateUserById;
 const deleteUserById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    return res;
+    try {
+        const id = +req.params.id;
+        const deletedUser = yield userRepo.findOneBy({ id });
+        (0, validations_1.idValidation)(deletedUser);
+        yield userRepo.remove(deletedUser);
+        return res.send({
+            ok: true,
+            message: `User with ID: ${id} deleted`,
+            item: deletedUser,
+        });
+    }
+    catch (error) {
+        return res.json({ ok: false, msg: error });
+    }
 });
 exports.deleteUserById = deleteUserById;

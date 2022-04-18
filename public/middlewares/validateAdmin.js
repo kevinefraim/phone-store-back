@@ -15,13 +15,15 @@ const User_1 = require("../entities/User");
 const validateAdmin = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = res.locals.user;
     const { isAdmin } = yield db_1.AppDataSource.getRepository(User_1.User).findOneBy({ id });
-    console.log(isAdmin);
-    if (!isAdmin)
-        return res.status(401).json({
+    if (!isAdmin) {
+        res.status(401).json({
             ok: false,
             msg: "no tiene permiso para realizar esta accion",
             errorCode: 800,
         });
-    next();
+    }
+    else {
+        next();
+    }
 });
 exports.validateAdmin = validateAdmin;
