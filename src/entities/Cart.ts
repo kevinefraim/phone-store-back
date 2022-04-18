@@ -9,6 +9,9 @@ export class Cart {
   @OneToMany(() => CartItem, (item) => item.id)
   item: CartItem[];
 
+  @Column({ default: 0 })
+  total: number;
+
   @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
   created_at: string;
 }

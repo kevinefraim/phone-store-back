@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { AppDataSource } from "../config/db";
+import { Cart, Phone } from "../entities";
 import { CartItem } from "../entities/CartItem";
 import { idValidation } from "../helpers/validations";
 
@@ -31,9 +32,6 @@ export const getItemById = async (
   res: Response
 ): Promise<Response> => {
   try {
-    res.locals.user;
-    console.log(res.locals.user);
-
     const id = +req.params.id;
     const item = await itemsRepo.findOne({
       where: {
@@ -60,12 +58,22 @@ export const createItem = async (
   req: Request,
   res: Response
 ): Promise<Response> => {
+  const cartRepo = await AppDataSource.getRepository(Cart);
   try {
-    const newItem = req.body;
-    if (res.locals.user.id !== req.body.user)
-      throw "El usuario ingresado no coincide con el loggeado";
+    const { phone, cart } = req.body;
+    const { user } = res.locals;
+    const cartExists = await cartRepo.findOneBy({ id: cart });
+    idValidation(cartExists);
 
-    const item = await itemsRepo.save(newItem);
+    const item = await itemsRepo.save({ phone, user: user.id, cart });
+
+    const { price } = await AppDataSource.getRepository(Phone).findOneBy({
+      id: phone,
+    });
+
+    cartExists.total += price;
+
+    await cartRepo.save(cartExists);
 
     return res.status(200).send({ ok: true, item });
   } catch (error) {
@@ -77,7 +85,7 @@ export const deleteItemById = async (
   res: Response
 ): Promise<Response> => {
   try {
-    console.log(res.locals.user);
+    const { user } = res.locals;
 
     const id = +req.params.id;
     const deletedItem = await itemsRepo.findOne({
