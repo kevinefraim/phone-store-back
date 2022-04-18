@@ -1,1 +1,1 @@
-Back for Phones E-Commerce using Typescript, MySql, Typeorm
+Back for Phones E-Commerce using Typescript, Express, MySql, Typeorm
