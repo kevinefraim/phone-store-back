@@ -14,6 +14,7 @@ const CartItem_routes_1 = __importDefault(require("./routes/CartItem.routes"));
 const Cart_routes_1 = __importDefault(require("./routes/Cart.routes"));
 (0, dotenv_1.config)();
 const app = (0, express_1.default)();
+const PORT = process.env.PORT || 3000;
 app.use((0, cors_1.default)());
 app.use(express_1.default.json());
 //DB connection
@@ -24,4 +25,6 @@ app.use("/brands", Brands_routes_1.default);
 app.use("/users", Users_routes_1.default);
 app.use("/items", CartItem_routes_1.default);
 app.use("/cart", Cart_routes_1.default);
+//initializing app in port
+app.listen(PORT, () => console.log(`Server on http://localhost:${PORT}`));
 exports.default = app;

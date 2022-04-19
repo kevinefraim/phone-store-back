@@ -14,6 +14,7 @@ const db_1 = require("../config/db");
 const entities_1 = require("../entities");
 const validations_1 = require("../helpers/validations");
 const itemsRepo = db_1.AppDataSource.getRepository(entities_1.CartItem);
+//get items by user
 const getItems = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { user } = res.locals;
@@ -34,6 +35,7 @@ const getItems = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.getItems = getItems;
+//get one item by user
 const getItemById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const id = +req.params.id;
@@ -59,6 +61,7 @@ const getItemById = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     }
 });
 exports.getItemById = getItemById;
+//creating item by user
 const createItem = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const cartRepo = yield db_1.AppDataSource.getRepository(entities_1.Cart);
     try {
@@ -82,6 +85,7 @@ const createItem = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     }
 });
 exports.createItem = createItem;
+//delete item by user
 const deleteItemById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const cartRepo = yield db_1.AppDataSource.getRepository(entities_1.Cart);
     try {
@@ -119,6 +123,7 @@ const deleteItemById = (req, res) => __awaiter(void 0, void 0, void 0, function*
     }
 });
 exports.deleteItemById = deleteItemById;
+//update item by user
 const updateItemById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const id = +req.params.id;

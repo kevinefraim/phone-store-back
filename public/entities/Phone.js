@@ -11,8 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Phone = void 0;
 const typeorm_1 = require("typeorm");
-const Brand_1 = require("./Brand");
-const CartItem_1 = require("./CartItem");
+const entities_1 = require("../entities");
 let Phone = class Phone {
 };
 __decorate([
@@ -24,9 +23,9 @@ __decorate([
     __metadata("design:type", String)
 ], Phone.prototype, "name", void 0);
 __decorate([
-    (0, typeorm_1.ManyToOne)(() => Brand_1.Brand, (brand) => brand.phones),
+    (0, typeorm_1.ManyToOne)(() => entities_1.Brand, (brand) => brand.phones),
     (0, typeorm_1.JoinColumn)(),
-    __metadata("design:type", Brand_1.Brand)
+    __metadata("design:type", entities_1.Brand)
 ], Phone.prototype, "brand", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
@@ -45,7 +44,7 @@ __decorate([
     __metadata("design:type", String)
 ], Phone.prototype, "image", void 0);
 __decorate([
-    (0, typeorm_1.OneToMany)(() => CartItem_1.CartItem, (item) => item.id),
+    (0, typeorm_1.OneToMany)(() => entities_1.CartItem, (item) => item.id),
     __metadata("design:type", Array)
 ], Phone.prototype, "item", void 0);
 __decorate([

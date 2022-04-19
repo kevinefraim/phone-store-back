@@ -11,7 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.User = void 0;
 const typeorm_1 = require("typeorm");
-const CartItem_1 = require("./CartItem");
+const entities_1 = require("../entities");
 let User = class User {
 };
 __decorate([
@@ -45,7 +45,7 @@ __decorate([
     __metadata("design:type", Boolean)
 ], User.prototype, "isAdmin", void 0);
 __decorate([
-    (0, typeorm_1.OneToMany)(() => CartItem_1.CartItem, (cartItem) => cartItem.user),
+    (0, typeorm_1.OneToMany)(() => entities_1.CartItem, (cartItem) => cartItem.user),
     __metadata("design:type", Array)
 ], User.prototype, "cartItem", void 0);
 __decorate([

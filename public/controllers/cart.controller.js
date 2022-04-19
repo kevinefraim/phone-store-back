@@ -13,6 +13,7 @@ exports.createCart = exports.getCart = void 0;
 const db_1 = require("../config/db");
 const entities_1 = require("../entities");
 const cartRepo = db_1.AppDataSource.getRepository(entities_1.Cart);
+//get carts
 const getCart = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const carts = yield cartRepo.find();
@@ -23,6 +24,7 @@ const getCart = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.getCart = getCart;
+//creating a new cart
 const createCart = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const newCart = req.body;

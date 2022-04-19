@@ -11,10 +11,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.validateAdmin = void 0;
 const db_1 = require("../config/db");
-const User_1 = require("../entities/User");
+const entities_1 = require("../entities");
+//validating admin
 const validateAdmin = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = res.locals.user;
-    const { isAdmin } = yield db_1.AppDataSource.getRepository(User_1.User).findOneBy({ id });
+    const { isAdmin } = yield db_1.AppDataSource.getRepository(entities_1.User).findOneBy({ id });
     if (!isAdmin) {
         res.status(401).json({
             ok: false,
