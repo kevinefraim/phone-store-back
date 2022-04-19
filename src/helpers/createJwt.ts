@@ -1,7 +1,8 @@
 import jwt from "jsonwebtoken";
 
-import { userTokenPayload } from "../types";
+import { userTokenPayload } from "../ts/types";
 
+//function that creates JWT token
 export const createJwt = (user: userTokenPayload) => {
   return new Promise((resolve, reject) => {
     const payload = { id: user.id, email: user.email };

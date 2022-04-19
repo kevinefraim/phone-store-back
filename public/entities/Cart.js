@@ -23,6 +23,10 @@ __decorate([
     __metadata("design:type", Array)
 ], Cart.prototype, "item", void 0);
 __decorate([
+    (0, typeorm_1.Column)({ default: 0 }),
+    __metadata("design:type", Number)
+], Cart.prototype, "total", void 0);
+__decorate([
     (0, typeorm_1.Column)({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" }),
     __metadata("design:type", String)
 ], Cart.prototype, "created_at", void 0);

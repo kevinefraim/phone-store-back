@@ -5,9 +5,7 @@ import {
   JoinColumn,
   ManyToOne,
 } from "typeorm";
-import { Cart } from "./Cart";
-import { Phone } from "./Phone";
-import { User } from "./User";
+import { Phone, Cart, User } from "../entities";
 
 @Entity()
 export class CartItem {

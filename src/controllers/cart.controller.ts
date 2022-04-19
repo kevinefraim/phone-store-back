@@ -4,6 +4,7 @@ import { Cart } from "../entities";
 
 const cartRepo = AppDataSource.getRepository(Cart);
 
+//get carts
 export const getCart = async (req: Request, res: Response) => {
   try {
     const carts = await cartRepo.find();
@@ -14,6 +15,7 @@ export const getCart = async (req: Request, res: Response) => {
   }
 };
 
+//creating a new cart
 export const createCart = async (req: Request, res: Response) => {
   try {
     const newCart = req.body;

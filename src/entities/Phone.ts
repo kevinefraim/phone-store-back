@@ -6,8 +6,7 @@ import {
   JoinColumn,
   OneToMany,
 } from "typeorm";
-import { Brand } from "./Brand";
-import { CartItem } from "./CartItem";
+import { Brand, CartItem } from "../entities";
 
 @Entity()
 export class Phone {

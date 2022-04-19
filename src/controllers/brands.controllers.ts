@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import { AppDataSource } from "../config/db";
-import { Brand } from "../entities/Brand";
-import { Phone } from "../entities/Phone";
+import { Brand } from "../entities";
 import { idValidation } from "../helpers/validations";
 
 const brandsRepo = AppDataSource.getRepository(Brand);

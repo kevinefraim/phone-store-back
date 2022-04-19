@@ -1,5 +1,4 @@
 import { Router } from "express";
-import app from "../app";
 import {
   createPhone,
   deletePhone,
@@ -7,8 +6,7 @@ import {
   getPhones,
   updatePhone,
 } from "../controllers/phones.controller";
-import { revToken } from "../middlewares/revToken";
-import { validateAdmin } from "../middlewares/validateAdmin";
+import { revToken, validateAdmin } from "../middlewares";
 
 const router = Router();
 

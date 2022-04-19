@@ -2,13 +2,12 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const user_controllers_1 = require("../controllers/user.controllers");
-const revToken_1 = require("../middlewares/revToken");
-const validateAdmin_1 = require("../middlewares/validateAdmin");
+const middlewares_1 = require("../middlewares");
 const router = (0, express_1.Router)();
 router.post("/register", user_controllers_1.registerUser);
 router.post("/login", user_controllers_1.loginUser);
-router.get("/", revToken_1.revToken, validateAdmin_1.validateAdmin, user_controllers_1.readUsers);
-router.get("/:id", revToken_1.revToken, validateAdmin_1.validateAdmin, user_controllers_1.readUserById);
-router.put("/update/:id", revToken_1.revToken, validateAdmin_1.validateAdmin, user_controllers_1.updateUserById);
-router.delete("/delete/:id", revToken_1.revToken, validateAdmin_1.validateAdmin, user_controllers_1.deleteUserById);
+router.get("/", middlewares_1.revToken, middlewares_1.validateAdmin, user_controllers_1.readUsers);
+router.get("/:id", middlewares_1.revToken, middlewares_1.validateAdmin, user_controllers_1.readUserById);
+router.put("/update/:id", middlewares_1.revToken, middlewares_1.validateAdmin, user_controllers_1.updateUserById);
+router.delete("/delete/:id", middlewares_1.revToken, middlewares_1.validateAdmin, user_controllers_1.deleteUserById);
 exports.default = router;

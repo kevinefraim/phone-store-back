@@ -6,7 +6,7 @@ import {
   getItems,
   updateItemById,
 } from "../controllers/cartItem.controller";
-import { revToken } from "../middlewares/revToken";
+import { revToken } from "../middlewares";
 
 const router = Router();
 

@@ -11,9 +11,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deletePhone = exports.updatePhone = exports.createPhone = exports.getPhoneById = exports.getPhones = void 0;
 const db_1 = require("../config/db");
-const Phone_1 = require("../entities/Phone");
+const entities_1 = require("../entities");
 const validations_1 = require("../helpers/validations");
-const phonesRepo = db_1.AppDataSource.getRepository(Phone_1.Phone);
+const phonesRepo = db_1.AppDataSource.getRepository(entities_1.Phone);
 //Read ALL the phones
 const getPhones = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {

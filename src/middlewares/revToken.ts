@@ -1,6 +1,7 @@
 import { Response, Request, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 
+//revalidating token and creating a new one
 export const revToken = async (
   req: Request,
   res: Response,

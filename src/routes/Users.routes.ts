@@ -7,8 +7,7 @@ import {
   registerUser,
   updateUserById,
 } from "../controllers/user.controllers";
-import { revToken } from "../middlewares/revToken";
-import { validateAdmin } from "../middlewares/validateAdmin";
+import { revToken, validateAdmin } from "../middlewares";
 
 const router = Router();
 

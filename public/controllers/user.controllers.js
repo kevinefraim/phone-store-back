@@ -11,11 +11,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.loginUser = exports.deleteUserById = exports.updateUserById = exports.readUserById = exports.readUsers = exports.registerUser = void 0;
 const db_1 = require("../config/db");
-const User_1 = require("../entities/User");
+const entities_1 = require("../entities");
 const createJwt_1 = require("../helpers/createJwt");
 const cryptPass_1 = require("../helpers/cryptPass");
 const validations_1 = require("../helpers/validations");
-const userRepo = db_1.AppDataSource.getRepository(User_1.User);
+const userRepo = db_1.AppDataSource.getRepository(entities_1.User);
 const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const newData = req.body;
     try {

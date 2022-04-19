@@ -1,15 +1,18 @@
 import { Request, Response } from "express";
 import { AppDataSource } from "../config/db";
-import { User } from "../entities/User";
+import { User } from "../entities";
 import { createJwt } from "../helpers/createJwt";
 import { comparePass, cryptPass } from "../helpers/cryptPass";
 import { idValidation } from "../helpers/validations";
-import { userTokenPayload } from "../types";
-import { deleteItemById } from "./cartItem.controller";
+import { userTokenPayload } from "../ts/types";
 
 const userRepo = AppDataSource.getRepository(User);
 
-const registerUser = async (req: Request, res: Response): Promise<Response> => {
+//register a new user
+export const registerUser = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
   const newData = req.body;
 
   try {
@@ -26,7 +29,11 @@ const registerUser = async (req: Request, res: Response): Promise<Response> => {
   }
 };
 
-const loginUser = async (req: Request, res: Response): Promise<Response> => {
+//login a existing user
+export const loginUser = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
   //user that tries to login
   const user = req.body;
   try {
@@ -54,7 +61,11 @@ const loginUser = async (req: Request, res: Response): Promise<Response> => {
   }
 };
 
-const readUsers = async (req: Request, res: Response): Promise<Response> => {
+//admin reading all users
+export const readUsers = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
   try {
     const users = await userRepo.find();
 
@@ -63,7 +74,12 @@ const readUsers = async (req: Request, res: Response): Promise<Response> => {
     return res.json({ ok: false, msg: error });
   }
 };
-const readUserById = async (req: Request, res: Response): Promise<Response> => {
+
+//admin reads one user by ID
+export const readUserById = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
   try {
     const id = +req.params.id;
     const users = await userRepo.findOneBy({ id });
@@ -73,13 +89,17 @@ const readUserById = async (req: Request, res: Response): Promise<Response> => {
     return res.json({ ok: false, msg: error });
   }
 };
-const updateUserById = async (
+
+//update user data
+export const updateUserById = async (
   req: Request,
   res: Response
 ): Promise<Response> => {
   return res;
 };
-const deleteUserById = async (
+
+//delete user by id
+export const deleteUserById = async (
   req: Request,
   res: Response
 ): Promise<Response> => {
@@ -97,12 +117,4 @@ const deleteUserById = async (
   } catch (error) {
     return res.json({ ok: false, msg: error });
   }
-};
-export {
-  registerUser,
-  readUsers,
-  readUserById,
-  updateUserById,
-  deleteUserById,
-  loginUser,
 };

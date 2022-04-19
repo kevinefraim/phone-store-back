@@ -11,14 +11,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.updateItemById = exports.deleteItemById = exports.createItem = exports.getItemById = exports.getItems = void 0;
 const db_1 = require("../config/db");
-const CartItem_1 = require("../entities/CartItem");
+const entities_1 = require("../entities");
 const validations_1 = require("../helpers/validations");
-const itemsRepo = db_1.AppDataSource.getRepository(CartItem_1.CartItem);
+const itemsRepo = db_1.AppDataSource.getRepository(entities_1.CartItem);
 const getItems = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        const { user } = res.locals;
         const items = yield itemsRepo.find({
             where: {
-                user: { id: res.locals.user.id },
+                user: { id: user.id },
             },
             relations: {
                 user: true,
@@ -35,12 +36,10 @@ const getItems = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 exports.getItems = getItems;
 const getItemById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        res.locals.user;
-        console.log(res.locals.user);
         const id = +req.params.id;
+        const { user } = res.locals;
         const item = yield itemsRepo.findOne({
             where: {
-                user: { id: res.locals.user.id },
                 id: id,
             },
             relations: {
@@ -49,6 +48,7 @@ const getItemById = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
             },
         });
         (0, validations_1.idValidation)(item);
+        (0, validations_1.userValidation)(user.id, item.user.id);
         return res.send({
             ok: true,
             item,
@@ -60,11 +60,21 @@ const getItemById = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
 });
 exports.getItemById = getItemById;
 const createItem = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const cartRepo = yield db_1.AppDataSource.getRepository(entities_1.Cart);
     try {
-        const newItem = req.body;
-        if (res.locals.user.id !== req.body.user)
-            throw "El usuario ingresado no coincide con el loggeado";
-        const item = yield itemsRepo.save(newItem);
+        const { phone, cart } = req.body;
+        const { user } = res.locals;
+        const cartExists = yield cartRepo.findOneBy({ id: cart });
+        (0, validations_1.idValidation)(cartExists);
+        const item = yield itemsRepo.save({ phone, user: user.id, cart });
+        //selecting phone by phone id passed in req.body
+        const { price } = yield db_1.AppDataSource.getRepository(entities_1.Phone).findOneBy({
+            id: phone,
+        });
+        //adding total
+        cartExists.total += price;
+        //saving total in cart
+        yield cartRepo.save(cartExists);
         return res.status(200).send({ ok: true, item });
     }
     catch (error) {
@@ -73,13 +83,17 @@ const createItem = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 });
 exports.createItem = createItem;
 const deleteItemById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const cartRepo = yield db_1.AppDataSource.getRepository(entities_1.Cart);
     try {
-        res.locals.user;
-        console.log(res.locals.user);
+        const { user } = res.locals;
         const id = +req.params.id;
+        const cartId = +req.params.cartId;
+        //cart that contains the item
+        const cartExists = yield cartRepo.findOneBy({ id: cartId });
+        (0, validations_1.idValidation)(cartExists);
+        //select item by user id and id
         const deletedItem = yield itemsRepo.findOne({
             where: {
-                user: { id: res.locals.user.id },
                 id: id,
             },
             relations: {
@@ -88,7 +102,12 @@ const deleteItemById = (req, res) => __awaiter(void 0, void 0, void 0, function*
             },
         });
         (0, validations_1.idValidation)(deletedItem);
+        (0, validations_1.userValidation)(user.id, deletedItem.user.id);
+        cartExists.total -= deletedItem.phone.price;
+        //remove selected item
         yield itemsRepo.remove(deletedItem);
+        //modify total
+        yield cartRepo.save(cartExists);
         return res.send({
             ok: true,
             message: `Item ${id} deleted`,
@@ -103,7 +122,17 @@ exports.deleteItemById = deleteItemById;
 const updateItemById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const id = +req.params.id;
-        const item = yield itemsRepo.findOneBy({ id });
+        const { user } = res.locals;
+        const item = yield itemsRepo.findOne({
+            where: {
+                id: id,
+            },
+            relations: {
+                user: true,
+                phone: true,
+            },
+        });
+        (0, validations_1.userValidation)(user.id, item.user.id);
         (0, validations_1.idValidation)(item);
         itemsRepo.merge(item, req.body);
         const updatedItem = yield itemsRepo.save(item);

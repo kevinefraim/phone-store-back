@@ -1,7 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 import { AppDataSource } from "../config/db";
-import { User } from "../entities/User";
+import { User } from "../entities";
 
+//validating admin
 export const validateAdmin = async (
   req: Request,
   res: Response,

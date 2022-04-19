@@ -1,11 +1,11 @@
 import { Request, Response } from "express";
 import { AppDataSource } from "../config/db";
-import { Cart, Phone } from "../entities";
-import { CartItem } from "../entities/CartItem";
+import { Cart, CartItem, Phone } from "../entities";
 import { idValidation, userValidation } from "../helpers/validations";
 
 const itemsRepo = AppDataSource.getRepository(CartItem);
 
+//get items by user
 export const getItems = async (
   req: Request,
   res: Response
@@ -28,6 +28,8 @@ export const getItems = async (
     return res.json({ ok: false, msg: error });
   }
 };
+
+//get one item by user
 export const getItemById = async (
   req: Request,
   res: Response
@@ -55,6 +57,7 @@ export const getItemById = async (
   }
 };
 
+//creating item by user
 export const createItem = async (
   req: Request,
   res: Response
@@ -84,6 +87,8 @@ export const createItem = async (
     return res.json({ ok: false, msg: error });
   }
 };
+
+//delete item by user
 export const deleteItemById = async (
   req: Request,
   res: Response
@@ -128,6 +133,8 @@ export const deleteItemById = async (
     return res.json({ ok: false, msg: error });
   }
 };
+
+//update item by user
 export const updateItemById = async (
   req: Request,
   res: Response
