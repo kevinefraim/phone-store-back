@@ -23,7 +23,7 @@ __decorate([
     __metadata("design:type", String)
 ], Brand.prototype, "name", void 0);
 __decorate([
-    (0, typeorm_1.OneToMany)(() => entities_1.Phone, (phone) => phone.brand),
+    (0, typeorm_1.OneToMany)(() => entities_1.Phone, (phone) => phone.brand, { cascade: true }),
     __metadata("design:type", Array)
 ], Brand.prototype, "phones", void 0);
 __decorate([

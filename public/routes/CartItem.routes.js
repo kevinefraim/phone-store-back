@@ -9,5 +9,5 @@ router.get("/", cartItem_controller_1.getItems);
 router.get("/:id", cartItem_controller_1.getItemById);
 router.post("/create", cartItem_controller_1.createItem);
 router.put("/update/:id", cartItem_controller_1.updateItemById);
-router.delete("/delete/:id/:cartId", cartItem_controller_1.deleteItemById);
+router.delete("/delete/:id", cartItem_controller_1.deleteItemById);
 exports.default = router;

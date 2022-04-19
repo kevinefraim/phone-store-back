@@ -14,6 +14,7 @@ const db_1 = require("../config/db");
 const entities_1 = require("../entities");
 const validations_1 = require("../helpers/validations");
 const itemsRepo = db_1.AppDataSource.getRepository(entities_1.CartItem);
+const cartRepo = db_1.AppDataSource.getRepository(entities_1.Cart);
 //get items by user
 const getItems = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -47,6 +48,7 @@ const getItemById = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
             relations: {
                 user: true,
                 phone: true,
+                cart: true,
             },
         });
         (0, validations_1.idValidation)(item);
@@ -63,7 +65,6 @@ const getItemById = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
 exports.getItemById = getItemById;
 //creating item by user
 const createItem = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const cartRepo = yield db_1.AppDataSource.getRepository(entities_1.Cart);
     try {
         const { phone, cart } = req.body;
         const { user } = res.locals;
@@ -75,7 +76,7 @@ const createItem = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             id: phone,
         });
         //adding total
-        cartExists.total += price;
+        cartExists.total += price * +item.quantity;
         //saving total in cart
         yield cartRepo.save(cartExists);
         return res.status(200).send({ ok: true, item });
@@ -87,14 +88,9 @@ const createItem = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 exports.createItem = createItem;
 //delete item by user
 const deleteItemById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const cartRepo = yield db_1.AppDataSource.getRepository(entities_1.Cart);
     try {
         const { user } = res.locals;
         const id = +req.params.id;
-        const cartId = +req.params.cartId;
-        //cart that contains the item
-        const cartExists = yield cartRepo.findOneBy({ id: cartId });
-        (0, validations_1.idValidation)(cartExists);
         //select item by user id and id
         const deletedItem = yield itemsRepo.findOne({
             where: {
@@ -102,12 +98,16 @@ const deleteItemById = (req, res) => __awaiter(void 0, void 0, void 0, function*
             },
             relations: {
                 user: true,
+                cart: true,
                 phone: true,
             },
         });
         (0, validations_1.idValidation)(deletedItem);
         (0, validations_1.userValidation)(user.id, deletedItem.user.id);
-        cartExists.total -= deletedItem.phone.price;
+        //cart that contains the item
+        const cartExists = yield cartRepo.findOneBy({ id: deletedItem.cart.id });
+        (0, validations_1.idValidation)(cartExists);
+        cartExists.total -= deletedItem.phone.price * +deletedItem.quantity;
         //remove selected item
         yield itemsRepo.remove(deletedItem);
         //modify total
@@ -128,6 +128,7 @@ const updateItemById = (req, res) => __awaiter(void 0, void 0, void 0, function*
     try {
         const id = +req.params.id;
         const { user } = res.locals;
+        const { quantity } = req.body;
         const item = yield itemsRepo.findOne({
             where: {
                 id: id,
@@ -135,13 +136,21 @@ const updateItemById = (req, res) => __awaiter(void 0, void 0, void 0, function*
             relations: {
                 user: true,
                 phone: true,
+                cart: true,
             },
         });
         (0, validations_1.userValidation)(user.id, item.user.id);
         (0, validations_1.idValidation)(item);
-        itemsRepo.merge(item, req.body);
-        const updatedItem = yield itemsRepo.save(item);
-        return res.send({ updatedItem });
+        item.quantity = quantity;
+        yield itemsRepo.save(item);
+        const cart = yield cartRepo.findOne({
+            where: {
+                id: item.cart.id,
+            },
+        });
+        cart.total = item.phone.price * +item.quantity;
+        yield cartRepo.save(cart);
+        return res.send({ item });
     }
     catch (error) {
         return res.json({ ok: false, msg: error });

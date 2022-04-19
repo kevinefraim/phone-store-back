@@ -29,7 +29,7 @@ __decorate([
     __metadata("design:type", entities_1.User)
 ], CartItem.prototype, "user", void 0);
 __decorate([
-    (0, typeorm_1.ManyToOne)(() => entities_1.Cart, (cart) => cart.item),
+    (0, typeorm_1.ManyToOne)(() => entities_1.Cart, (cart) => cart.item, { onDelete: "CASCADE" }),
     (0, typeorm_1.JoinColumn)(),
     __metadata("design:type", entities_1.Cart)
 ], CartItem.prototype, "cart", void 0);

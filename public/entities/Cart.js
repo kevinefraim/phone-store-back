@@ -19,7 +19,7 @@ __decorate([
     __metadata("design:type", Number)
 ], Cart.prototype, "id", void 0);
 __decorate([
-    (0, typeorm_1.OneToMany)(() => entities_1.CartItem, (item) => item.id),
+    (0, typeorm_1.OneToMany)(() => entities_1.CartItem, (item) => item.id, { cascade: true }),
     __metadata("design:type", Array)
 ], Cart.prototype, "item", void 0);
 __decorate([

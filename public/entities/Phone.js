@@ -23,7 +23,7 @@ __decorate([
     __metadata("design:type", String)
 ], Phone.prototype, "name", void 0);
 __decorate([
-    (0, typeorm_1.ManyToOne)(() => entities_1.Brand, (brand) => brand.phones),
+    (0, typeorm_1.ManyToOne)(() => entities_1.Brand, (brand) => brand.phones, { onDelete: "CASCADE" }),
     (0, typeorm_1.JoinColumn)(),
     __metadata("design:type", entities_1.Brand)
 ], Phone.prototype, "brand", void 0);
