@@ -16,7 +16,7 @@ export class Phone {
   @Column()
   name: string;
 
-  @ManyToOne(() => Brand, (brand) => brand.phones)
+  @ManyToOne(() => Brand, (brand) => brand.phones, { onDelete: "CASCADE" })
   @JoinColumn()
   brand: Brand;
 

@@ -15,6 +15,6 @@ router.get("/", getItems);
 router.get("/:id", getItemById);
 router.post("/create", createItem);
 router.put("/update/:id", updateItemById);
-router.delete("/delete/:id/:cartId", deleteItemById);
+router.delete("/delete/:id", deleteItemById);
 
 export default router;

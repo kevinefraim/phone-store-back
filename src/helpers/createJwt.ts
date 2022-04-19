@@ -1,5 +1,4 @@
 import jwt from "jsonwebtoken";
-
 import { userTokenPayload } from "../ts/types";
 
 //function that creates JWT token

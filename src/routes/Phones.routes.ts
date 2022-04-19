@@ -10,11 +10,10 @@ import { revToken, validateAdmin } from "../middlewares";
 
 const router = Router();
 
-router.use(revToken);
 router.get("/", getPhones);
 router.get("/:id", getPhoneById);
-router.post("/create", validateAdmin, createPhone);
-router.put("/update/:id", validateAdmin, updatePhone);
-router.delete("/delete/:id", validateAdmin, deletePhone);
+router.post("/create", revToken, validateAdmin, createPhone);
+router.put("/update/:id", revToken, validateAdmin, updatePhone);
+router.delete("/delete/:id", revToken, validateAdmin, deletePhone);
 
 export default router;

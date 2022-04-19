@@ -10,11 +10,10 @@ import { revToken, validateAdmin } from "../middlewares";
 
 const router = Router();
 
-router.use(revToken);
 router.get("/", getBrands);
 router.get("/:id", getBrandById);
-router.post("/create", validateAdmin, createBrand);
-router.put("/update/:id", validateAdmin, updateBrand);
-router.delete("/delete/:id", validateAdmin, deleteBrand);
+router.post("/create", revToken, validateAdmin, createBrand);
+router.put("/update/:id", revToken, validateAdmin, updateBrand);
+router.delete("/delete/:id", revToken, validateAdmin, deleteBrand);
 
 export default router;

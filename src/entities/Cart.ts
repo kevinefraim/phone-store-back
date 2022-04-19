@@ -6,7 +6,7 @@ export class Cart {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @OneToMany(() => CartItem, (item) => item.id)
+  @OneToMany(() => CartItem, (item) => item.id, { cascade: true })
   item: CartItem[];
 
   @Column({ default: 0 })

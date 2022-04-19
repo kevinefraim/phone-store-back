@@ -9,7 +9,7 @@ export class Brand {
   @Column()
   name: string;
 
-  @OneToMany(() => Phone, (phone) => phone.brand)
+  @OneToMany(() => Phone, (phone) => phone.brand, { cascade: true })
   phones: Phone[];
 
   @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })

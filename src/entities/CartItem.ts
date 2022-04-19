@@ -20,7 +20,7 @@ export class CartItem {
   @JoinColumn()
   user: User;
 
-  @ManyToOne(() => Cart, (cart) => cart.item)
+  @ManyToOne(() => Cart, (cart) => cart.item, { onDelete: "CASCADE" })
   @JoinColumn()
   cart: Cart;
 

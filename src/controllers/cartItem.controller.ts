@@ -4,6 +4,7 @@ import { Cart, CartItem, Phone } from "../entities";
 import { idValidation, userValidation } from "../helpers/validations";
 
 const itemsRepo = AppDataSource.getRepository(CartItem);
+const cartRepo = AppDataSource.getRepository(Cart);
 
 //get items by user
 export const getItems = async (
@@ -44,6 +45,7 @@ export const getItemById = async (
       relations: {
         user: true,
         phone: true,
+        cart: true,
       },
     });
     idValidation(item);
@@ -62,7 +64,6 @@ export const createItem = async (
   req: Request,
   res: Response
 ): Promise<Response> => {
-  const cartRepo = await AppDataSource.getRepository(Cart);
   try {
     const { phone, cart } = req.body;
     const { user } = res.locals;
@@ -77,7 +78,7 @@ export const createItem = async (
     });
 
     //adding total
-    cartExists.total += price;
+    cartExists.total += price * +item.quantity;
 
     //saving total in cart
     await cartRepo.save(cartExists);
@@ -93,15 +94,9 @@ export const deleteItemById = async (
   req: Request,
   res: Response
 ): Promise<Response> => {
-  const cartRepo = await AppDataSource.getRepository(Cart);
   try {
     const { user } = res.locals;
     const id = +req.params.id;
-    const cartId = +req.params.cartId;
-
-    //cart that contains the item
-    const cartExists = await cartRepo.findOneBy({ id: cartId });
-    idValidation(cartExists);
 
     //select item by user id and id
     const deletedItem = await itemsRepo.findOne({
@@ -110,13 +105,18 @@ export const deleteItemById = async (
       },
       relations: {
         user: true,
+        cart: true,
         phone: true,
       },
     });
     idValidation(deletedItem);
     userValidation(user.id, deletedItem.user.id);
 
-    cartExists.total -= deletedItem.phone.price;
+    //cart that contains the item
+    const cartExists = await cartRepo.findOneBy({ id: deletedItem.cart.id });
+    idValidation(cartExists);
+
+    cartExists.total -= deletedItem.phone.price * +deletedItem.quantity;
 
     //remove selected item
     await itemsRepo.remove(deletedItem);
@@ -142,6 +142,7 @@ export const updateItemById = async (
   try {
     const id = +req.params.id;
     const { user } = res.locals;
+    const { quantity } = req.body;
     const item = await itemsRepo.findOne({
       where: {
         id: id,
@@ -149,16 +150,26 @@ export const updateItemById = async (
       relations: {
         user: true,
         phone: true,
+        cart: true,
       },
     });
 
     userValidation(user.id, item.user.id);
     idValidation(item);
 
-    itemsRepo.merge(item, req.body);
-    const updatedItem = await itemsRepo.save(item);
+    item.quantity = quantity;
+    await itemsRepo.save(item);
 
-    return res.send({ updatedItem });
+    const cart = await cartRepo.findOne({
+      where: {
+        id: item.cart.id,
+      },
+    });
+
+    cart.total = item.phone.price * +item.quantity;
+    await cartRepo.save(cart);
+
+    return res.send({ item });
   } catch (error) {
     return res.json({ ok: false, msg: error });
   }

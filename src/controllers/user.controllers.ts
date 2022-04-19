@@ -38,24 +38,24 @@ export const loginUser = async (
   const user = req.body;
   try {
     //user that exists with email
-    const userExist = await userRepo.findOneBy({ email: user.email });
+    const loginUser = await userRepo.findOneBy({ email: user.email });
 
     //validating if the email entered is registered
-    if (!userExist) throw "El usuario no existe";
+    if (!loginUser) throw "El usuario no existe";
 
     //comparing password entered with password registered
-    const isValidPass = comparePass(user.password, userExist.password);
+    const isValidPass = comparePass(user.password, loginUser.password);
     if (!isValidPass) throw "Los datos son incorrectos";
 
     //creating token payload with ID and Email
     const verifiedUser: userTokenPayload = {
-      id: userExist.id,
-      email: userExist.email,
+      id: loginUser.id,
+      email: loginUser.email,
     };
 
     //creating token payload
     const token = await createJwt(verifiedUser);
-    return res.json({ ok: true, id: userExist.id, msg: "logged", token });
+    return res.json({ ok: true, token, msg: "logged", loginUser });
   } catch (error) {
     return res.json({ ok: false, msg: error });
   }
