@@ -83,7 +83,13 @@ export const createItem = async (
     //saving total in cart
     await cartRepo.save(cartExists);
 
-    return res.status(200).send({ ok: true, item });
+    //return new item
+    const newItem = await itemsRepo.findOne({
+      where: { id: item.id },
+      relations: { cart: true, phone: true },
+    });
+
+    return res.status(200).send({ ok: true, newItem });
   } catch (error) {
     return res.json({ ok: false, msg: error });
   }
@@ -169,7 +175,13 @@ export const updateItemById = async (
     cart.total = item.phone.price * +item.quantity;
     await cartRepo.save(cart);
 
-    return res.send({ item });
+    //return item updated
+    const newItem = await itemsRepo.findOne({
+      where: { id: item.id },
+      relations: { cart: true, phone: true },
+    });
+
+    return res.send({ newItem });
   } catch (error) {
     return res.json({ ok: false, msg: error });
   }

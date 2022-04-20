@@ -1,11 +1,10 @@
 import { Request, Response } from "express";
 import { z, ZodError } from "zod";
 import { AppDataSource } from "../config/db";
-import { Brand, Phone } from "../entities";
+import { Phone } from "../entities";
 import { idValidation } from "../helpers/validations";
 
 const phonesRepo = AppDataSource.getRepository(Phone);
-const brandsRepo = AppDataSource.getRepository(Brand);
 
 //Read ALL the phones
 export const getPhones = async (
@@ -46,17 +45,18 @@ export const createPhone = async (
   res: Response
 ): Promise<Response> => {
   try {
-    const newPhone = req.body;
+    const newData = req.body;
 
-    // const phone = await phonesRepo.save(newPhone);
+    const phone = await phonesRepo.save(newData);
 
-    return res.status(200).send({ ok: true });
+    const newPhone = await phonesRepo.findOne({
+      where: { id: phone.id },
+      relations: { brand: true },
+    });
+
+    return res.status(200).send({ ok: true, newPhone });
   } catch (error) {
-    if (error instanceof ZodError) {
-      return res.json({ error: error.flatten().fieldErrors });
-    } else {
-      res.json({ ok: false, msg: error });
-    }
+    res.json({ ok: false, msg: error });
   }
 };
 
@@ -70,7 +70,13 @@ export const updatePhone = async (req: Request, res: Response) => {
 
     phonesRepo.merge(phone, updateData);
     const updatedPhone = await phonesRepo.save(phone);
-    return res.send({ updatedPhone });
+
+    const newUpdatedPhone = await phonesRepo.findOne({
+      where: { id: phone.id },
+      relations: { brand: true },
+    });
+
+    return res.send({ newUpdatedPhone });
   } catch (error) {
     return res.json({ ok: false, msg: error });
   }
