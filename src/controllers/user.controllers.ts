@@ -95,7 +95,22 @@ export const updateUserById = async (
   req: Request,
   res: Response
 ): Promise<Response> => {
-  return res;
+  try {
+    const updateData = req.body;
+    const { user } = res.locals;
+    const userToUpdate = await userRepo.findOne({ where: { id: user.id } });
+
+    userRepo.merge(userToUpdate, updateData);
+    const updatedPhone = await userRepo.save(userToUpdate);
+
+    const newUpdatedUser = await userRepo.findOne({
+      where: { id: updatedPhone.id },
+    });
+
+    return res.send({ newUpdatedUser });
+  } catch (error) {
+    return res.json({ ok: false, msg: error });
+  }
 };
 
 //delete user by id
