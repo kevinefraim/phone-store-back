@@ -33,7 +33,10 @@ export const getPhoneById = async (
 ): Promise<Response> => {
   try {
     const id = +req.params.id;
-    const phone = await phonesRepo.findOneBy({ id });
+    const phone = await phonesRepo.findOne({
+      where: { id: id },
+      relations: { brand: true },
+    });
     idValidation(phone);
     return res.send({ phone });
   } catch (error) {
