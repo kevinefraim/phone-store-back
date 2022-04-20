@@ -1,10 +1,12 @@
 import { Request, Response } from "express";
 import { z, ZodError } from "zod";
 import { AppDataSource } from "../config/db";
-import { Phone } from "../entities";
+import { Brand, Phone } from "../entities";
+import { existenceValidator } from "../helpers/existenceValidator";
 import { idValidation } from "../helpers/validations";
 
 const phonesRepo = AppDataSource.getRepository(Phone);
+const brandRepo = AppDataSource.getRepository(Brand);
 
 //Read ALL the phones
 export const getPhones = async (
@@ -47,6 +49,11 @@ export const createPhone = async (
   try {
     const newData = req.body;
 
+    const brandExists = await brandRepo.findOne({
+      where: { id: newData.brand },
+    });
+    existenceValidator(brandExists, "brand");
+
     const phone = await phonesRepo.save(newData);
 
     const newPhone = await phonesRepo.findOne({
@@ -65,6 +72,10 @@ export const updatePhone = async (req: Request, res: Response) => {
   try {
     const id = +req.params.id;
     const updateData = req.body;
+    const brandExists = await brandRepo.findOne({
+      where: { id: updateData.brand },
+    });
+    existenceValidator(brandExists, "brand");
     const phone = await phonesRepo.findOneBy({ id });
     idValidation(phone);
 
@@ -72,7 +83,7 @@ export const updatePhone = async (req: Request, res: Response) => {
     const updatedPhone = await phonesRepo.save(phone);
 
     const newUpdatedPhone = await phonesRepo.findOne({
-      where: { id: phone.id },
+      where: { id: updatedPhone.id },
       relations: { brand: true },
     });
 

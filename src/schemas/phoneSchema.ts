@@ -6,5 +6,5 @@ export const phoneSchema = z.object({
   price: z.number(),
   stock: z.number(),
   image: z.string(),
-  // brand: z.enum(), cant't make an enum of numbers
+  brand: z.number(),
 });

@@ -1,10 +1,13 @@
 import { Request, Response } from "express";
 import { AppDataSource } from "../config/db";
-import { Cart, CartItem, Phone } from "../entities";
+import { Cart, CartItem, Phone, User } from "../entities";
+import { existenceValidator } from "../helpers/existenceValidator";
 import { idValidation, userValidation } from "../helpers/validations";
 
 const itemsRepo = AppDataSource.getRepository(CartItem);
 const cartRepo = AppDataSource.getRepository(Cart);
+const phoneRepo = AppDataSource.getRepository(Phone);
+const userRepo = AppDataSource.getRepository(User);
 
 //get items by user
 export const getItems = async (
@@ -68,7 +71,10 @@ export const createItem = async (
     const { phone, cart } = req.body;
     const { user } = res.locals;
     const cartExists = await cartRepo.findOneBy({ id: cart });
-    idValidation(cartExists);
+    const phoneExists = await phoneRepo.findOneBy({ id: phone });
+
+    existenceValidator(cartExists, "cart");
+    existenceValidator(phoneExists, "phone");
 
     const item = await itemsRepo.save({ phone, user: user.id, cart });
 
