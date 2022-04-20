@@ -12,8 +12,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.deletePhone = exports.updatePhone = exports.createPhone = exports.getPhoneById = exports.getPhones = void 0;
 const db_1 = require("../config/db");
 const entities_1 = require("../entities");
+const existenceValidator_1 = require("../helpers/existenceValidator");
 const validations_1 = require("../helpers/validations");
 const phonesRepo = db_1.AppDataSource.getRepository(entities_1.Phone);
+const brandRepo = db_1.AppDataSource.getRepository(entities_1.Brand);
 //Read ALL the phones
 const getPhones = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -45,12 +47,20 @@ exports.getPhoneById = getPhoneById;
 //create phone
 const createPhone = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const newPhone = req.body;
-        const phone = yield phonesRepo.save(newPhone);
-        return res.status(200).send({ ok: true, phone });
+        const newData = req.body;
+        const brandExists = yield brandRepo.findOne({
+            where: { id: newData.brand },
+        });
+        (0, existenceValidator_1.existenceValidator)(brandExists, "brand");
+        const phone = yield phonesRepo.save(newData);
+        const newPhone = yield phonesRepo.findOne({
+            where: { id: phone.id },
+            relations: { brand: true },
+        });
+        return res.status(200).send({ ok: true, newPhone });
     }
     catch (error) {
-        return res.json({ ok: false, msg: error });
+        res.json({ ok: false, msg: error });
     }
 });
 exports.createPhone = createPhone;
@@ -58,11 +68,20 @@ exports.createPhone = createPhone;
 const updatePhone = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const id = +req.params.id;
+        const updateData = req.body;
+        const brandExists = yield brandRepo.findOne({
+            where: { id: updateData.brand },
+        });
+        (0, existenceValidator_1.existenceValidator)(brandExists, "brand");
         const phone = yield phonesRepo.findOneBy({ id });
         (0, validations_1.idValidation)(phone);
-        phonesRepo.merge(phone, req.body);
+        phonesRepo.merge(phone, updateData);
         const updatedPhone = yield phonesRepo.save(phone);
-        return res.send({ updatedPhone });
+        const newUpdatedPhone = yield phonesRepo.findOne({
+            where: { id: updatedPhone.id },
+            relations: { brand: true },
+        });
+        return res.send({ newUpdatedPhone });
     }
     catch (error) {
         return res.json({ ok: false, msg: error });

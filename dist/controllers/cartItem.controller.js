@@ -12,9 +12,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.updateItemById = exports.deleteItemById = exports.createItem = exports.getItemById = exports.getItems = void 0;
 const db_1 = require("../config/db");
 const entities_1 = require("../entities");
+const existenceValidator_1 = require("../helpers/existenceValidator");
 const validations_1 = require("../helpers/validations");
 const itemsRepo = db_1.AppDataSource.getRepository(entities_1.CartItem);
 const cartRepo = db_1.AppDataSource.getRepository(entities_1.Cart);
+const phoneRepo = db_1.AppDataSource.getRepository(entities_1.Phone);
+const userRepo = db_1.AppDataSource.getRepository(entities_1.User);
 //get items by user
 const getItems = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -69,7 +72,9 @@ const createItem = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         const { phone, cart } = req.body;
         const { user } = res.locals;
         const cartExists = yield cartRepo.findOneBy({ id: cart });
-        (0, validations_1.idValidation)(cartExists);
+        const phoneExists = yield phoneRepo.findOneBy({ id: phone });
+        (0, existenceValidator_1.existenceValidator)(cartExists, "cart");
+        (0, existenceValidator_1.existenceValidator)(phoneExists, "phone");
         const item = yield itemsRepo.save({ phone, user: user.id, cart });
         //selecting phone by phone id passed in req.body
         const { price } = yield db_1.AppDataSource.getRepository(entities_1.Phone).findOneBy({
@@ -79,7 +84,12 @@ const createItem = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         cartExists.total += price * +item.quantity;
         //saving total in cart
         yield cartRepo.save(cartExists);
-        return res.status(200).send({ ok: true, item });
+        //return new item
+        const newItem = yield itemsRepo.findOne({
+            where: { id: item.id },
+            relations: { cart: true, phone: true },
+        });
+        return res.status(200).send({ ok: true, newItem });
     }
     catch (error) {
         return res.json({ ok: false, msg: error });
@@ -150,7 +160,12 @@ const updateItemById = (req, res) => __awaiter(void 0, void 0, void 0, function*
         });
         cart.total = item.phone.price * +item.quantity;
         yield cartRepo.save(cart);
-        return res.send({ item });
+        //return item updated
+        const newItem = yield itemsRepo.findOne({
+            where: { id: item.id },
+            relations: { cart: true, phone: true },
+        });
+        return res.send({ newItem });
     }
     catch (error) {
         return res.json({ ok: false, msg: error });

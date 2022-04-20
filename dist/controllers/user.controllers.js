@@ -86,7 +86,20 @@ const readUserById = (req, res) => __awaiter(void 0, void 0, void 0, function* (
 exports.readUserById = readUserById;
 //update user data
 const updateUserById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    return res;
+    try {
+        const updateData = req.body;
+        const { user } = res.locals;
+        const userToUpdate = yield userRepo.findOne({ where: { id: user.id } });
+        userRepo.merge(userToUpdate, updateData);
+        const updatedPhone = yield userRepo.save(userToUpdate);
+        const newUpdatedUser = yield userRepo.findOne({
+            where: { id: updatedPhone.id },
+        });
+        return res.send({ newUpdatedUser });
+    }
+    catch (error) {
+        return res.json({ ok: false, msg: error });
+    }
 });
 exports.updateUserById = updateUserById;
 //delete user by id

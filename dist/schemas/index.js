@@ -1,0 +1,13 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.userSchema = exports.brandSchema = exports.loginSchema = exports.registerSchema = exports.phoneSchema = void 0;
+var phoneSchema_1 = require("./phoneSchema");
+Object.defineProperty(exports, "phoneSchema", { enumerable: true, get: function () { return phoneSchema_1.phoneSchema; } });
+var registerSchema_1 = require("./registerSchema");
+Object.defineProperty(exports, "registerSchema", { enumerable: true, get: function () { return registerSchema_1.registerSchema; } });
+var loginSchema_1 = require("./loginSchema");
+Object.defineProperty(exports, "loginSchema", { enumerable: true, get: function () { return loginSchema_1.loginSchema; } });
+var brandSchema_1 = require("./brandSchema");
+Object.defineProperty(exports, "brandSchema", { enumerable: true, get: function () { return brandSchema_1.brandSchema; } });
+var userSchema_1 = require("./userSchema");
+Object.defineProperty(exports, "userSchema", { enumerable: true, get: function () { return userSchema_1.userSchema; } });
