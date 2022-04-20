@@ -1,9 +1,11 @@
 import { Request, Response } from "express";
+import { z, ZodError } from "zod";
 import { AppDataSource } from "../config/db";
-import { Phone } from "../entities";
+import { Brand, Phone } from "../entities";
 import { idValidation } from "../helpers/validations";
 
 const phonesRepo = AppDataSource.getRepository(Phone);
+const brandsRepo = AppDataSource.getRepository(Brand);
 
 //Read ALL the phones
 export const getPhones = async (
@@ -46,11 +48,15 @@ export const createPhone = async (
   try {
     const newPhone = req.body;
 
-    const phone = await phonesRepo.save(newPhone);
+    // const phone = await phonesRepo.save(newPhone);
 
-    return res.status(200).send({ ok: true, phone });
+    return res.status(200).send({ ok: true });
   } catch (error) {
-    return res.json({ ok: false, msg: error });
+    if (error instanceof ZodError) {
+      return res.json({ error: error.flatten().fieldErrors });
+    } else {
+      res.json({ ok: false, msg: error });
+    }
   }
 };
 
@@ -58,9 +64,11 @@ export const createPhone = async (
 export const updatePhone = async (req: Request, res: Response) => {
   try {
     const id = +req.params.id;
+    const updateData = req.body;
     const phone = await phonesRepo.findOneBy({ id });
     idValidation(phone);
-    phonesRepo.merge(phone, req.body);
+
+    phonesRepo.merge(phone, updateData);
     const updatedPhone = await phonesRepo.save(phone);
     return res.send({ updatedPhone });
   } catch (error) {
