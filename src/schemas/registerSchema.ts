@@ -5,5 +5,5 @@ export const registerSchema = z.object({
   name: z.string(),
   last_name: z.string(),
   password: z.string(),
-  isAdmin: z.boolean(),
+  isAdmin: z.boolean().optional(),
 });
