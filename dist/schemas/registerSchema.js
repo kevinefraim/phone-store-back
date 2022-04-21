@@ -6,7 +6,6 @@ exports.registerSchema = zod_1.z.object({
     email: zod_1.z.string().email(),
     name: zod_1.z.string(),
     last_name: zod_1.z.string(),
-    birth_date: zod_1.z.string(),
     password: zod_1.z.string(),
-    isAdmin: zod_1.z.boolean(),
+    isAdmin: zod_1.z.boolean().optional(),
 });

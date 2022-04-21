@@ -26,7 +26,14 @@ const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         const hashedPass = (0, cryptPass_1.cryptPass)(newData.password);
         newData.password = hashedPass;
         const newUser = yield userRepo.save(newData);
-        return res.json({ ok: true, user: newUser, msg: "Usuario creado" });
+        //creating token payload with ID and Email
+        const verifiedUser = {
+            id: newUser.id,
+            email: newUser.email,
+        };
+        //creating token payload
+        const token = yield (0, createJwt_1.createJwt)(verifiedUser);
+        return res.json({ ok: true, token, user: newUser, msg: "Usuario creado" });
     }
     catch (error) {
         return res.json({ ok: false, msg: error });
