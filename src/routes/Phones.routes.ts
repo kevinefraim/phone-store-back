@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
   createPhone,
   deletePhone,
+  getPhoneByBrand,
   getPhoneById,
   getPhones,
   updatePhone,
@@ -13,6 +14,7 @@ const router = Router();
 
 router.get("/", getPhones);
 router.get("/:id", getPhoneById);
+router.get("/brand/:brand", getPhoneByBrand);
 router.post(
   "/create",
   revToken,

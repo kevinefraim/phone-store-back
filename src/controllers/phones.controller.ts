@@ -44,6 +44,22 @@ export const getPhoneById = async (
   }
 };
 
+//get phones by brand
+
+export const getPhoneByBrand = async (req: Request, res: Response) => {
+  const brand = req.params.brand;
+  try {
+    const filteredPhones = await phonesRepo
+      .createQueryBuilder("phones")
+      .leftJoinAndSelect("phones.brand", "brand")
+      .where("brand.name = :brand", { brand: brand })
+      .getMany();
+    return res.status(200).json({ ok: true, filteredPhones });
+  } catch (error) {
+    res.json({ ok: false, msg: error });
+  }
+};
+
 //create phone
 export const createPhone = async (
   req: Request,

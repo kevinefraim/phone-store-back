@@ -25,7 +25,7 @@ app.use("/brands", brandsRouter);
 app.use("/users", usersRouter);
 app.use("/items", itemsRouter);
 app.use("/cart", cartRouter);
-app.use("/", (req, res) => res.send("hola"));
+// app.use("/", (req, res) => res.send("hola"));
 
 //initializing app in port
 app.listen(PORT, () => console.log(`Server on http://localhost:${PORT}`));
