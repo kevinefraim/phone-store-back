@@ -23,7 +23,17 @@ export const registerUser = async (
     newData.password = hashedPass;
 
     const newUser = await userRepo.save(newData);
-    return res.json({ ok: true, user: newUser, msg: "Usuario creado" });
+
+    //creating token payload with ID and Email
+    const verifiedUser: userTokenPayload = {
+      id: newUser.id,
+      email: newUser.email,
+    };
+
+    //creating token payload
+    const token = await createJwt(verifiedUser);
+
+    return res.json({ ok: true, token, user: newUser, msg: "Usuario creado" });
   } catch (error) {
     return res.json({ ok: false, msg: error });
   }
