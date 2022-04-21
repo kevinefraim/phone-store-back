@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deletePhone = exports.updatePhone = exports.createPhone = exports.getPhoneById = exports.getPhones = void 0;
+exports.deletePhone = exports.updatePhone = exports.createPhone = exports.getPhoneByBrand = exports.getPhoneById = exports.getPhones = void 0;
 const db_1 = require("../config/db");
 const entities_1 = require("../entities");
 const existenceValidator_1 = require("../helpers/existenceValidator");
@@ -35,7 +35,10 @@ exports.getPhones = getPhones;
 const getPhoneById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const id = +req.params.id;
-        const phone = yield phonesRepo.findOneBy({ id });
+        const phone = yield phonesRepo.findOne({
+            where: { id: id },
+            relations: { brand: true },
+        });
         (0, validations_1.idValidation)(phone);
         return res.send({ phone });
     }
@@ -44,6 +47,24 @@ const getPhoneById = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     }
 });
 exports.getPhoneById = getPhoneById;
+//get phones by brand
+const getPhoneByBrand = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const brand = req.params.brand;
+    try {
+        const filteredPhones = yield phonesRepo
+            .createQueryBuilder("phones")
+            .leftJoinAndSelect("phones.brand", "brand")
+            .where("brand.name = :brand", { brand: brand })
+            .getMany();
+        if (filteredPhones.length < 1)
+            throw "No hay teléfonos de la marca seleccionada";
+        return res.status(200).json({ ok: true, filteredPhones });
+    }
+    catch (error) {
+        res.json({ ok: false, msg: error });
+    }
+});
+exports.getPhoneByBrand = getPhoneByBrand;
 //create phone
 const createPhone = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {

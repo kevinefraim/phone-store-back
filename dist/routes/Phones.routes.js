@@ -7,6 +7,7 @@ const schemas_1 = require("../schemas");
 const router = (0, express_1.Router)();
 router.get("/", phones_controller_1.getPhones);
 router.get("/:id", phones_controller_1.getPhoneById);
+router.get("/brand/:brand", phones_controller_1.getPhoneByBrand);
 router.post("/create", middlewares_1.revToken, middlewares_1.validateAdmin, (0, middlewares_1.schemaValidator)(schemas_1.phoneSchema), phones_controller_1.createPhone);
 router.put("/update/:id", middlewares_1.revToken, middlewares_1.validateAdmin, phones_controller_1.updatePhone);
 router.delete("/delete/:id", middlewares_1.revToken, middlewares_1.validateAdmin, phones_controller_1.deletePhone);

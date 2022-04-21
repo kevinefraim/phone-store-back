@@ -20,12 +20,12 @@ app.use(express_1.default.json());
 //DB connection
 (0, db_1.dbConnection)();
 //routes
-app.use("/", (req, res) => res.send("hola"));
 app.use("/phones", Phones_routes_1.default);
 app.use("/brands", Brands_routes_1.default);
 app.use("/users", Users_routes_1.default);
 app.use("/items", CartItem_routes_1.default);
 app.use("/cart", Cart_routes_1.default);
+// app.use("/", (req, res) => res.send("hola"));
 //initializing app in port
 app.listen(PORT, () => console.log(`Server on http://localhost:${PORT}`));
 exports.default = app;

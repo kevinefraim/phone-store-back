@@ -54,6 +54,8 @@ export const getPhoneByBrand = async (req: Request, res: Response) => {
       .leftJoinAndSelect("phones.brand", "brand")
       .where("brand.name = :brand", { brand: brand })
       .getMany();
+    if (filteredPhones.length < 1)
+      throw "No hay teléfonos de la marca seleccionada";
     return res.status(200).json({ ok: true, filteredPhones });
   } catch (error) {
     res.json({ ok: false, msg: error });
