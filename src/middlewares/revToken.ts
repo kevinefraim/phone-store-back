@@ -7,7 +7,8 @@ export const revToken = async (
   res: Response,
   next: NextFunction
 ) => {
-  const token = req.header("token");
+  const token = req.header("x-token");
+
   if (!token)
     return res.status(401).json({ ok: false, msg: "no está autorizado" });
   try {

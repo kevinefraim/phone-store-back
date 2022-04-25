@@ -179,6 +179,7 @@ export const updateItemById = async (
     });
 
     cart.total = item.phone.price * +item.quantity;
+
     await cartRepo.save(cart);
 
     //return item updated
