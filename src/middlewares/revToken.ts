@@ -7,15 +7,14 @@ export const revToken = async (
   res: Response,
   next: NextFunction
 ) => {
-  const token = req.header("x-token");
+  const token = req.header("token");
+  if (!token)
+    return res.status(401).json({ ok: false, msg: "no está autorizado" });
   try {
-    if (!token)
-      return res.status(401).json({ ok: false, msg: "no está autorizado" });
-
-    const user = jwt.verify(
+    const validToken = jwt.verify(
       token,
       process.env.JWT_SECRET_SEED,
-      (err, decoded) => {
+      (err: any, decoded: any) => {
         if (err) {
           throw "token expirado";
         }

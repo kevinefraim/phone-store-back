@@ -51,7 +51,7 @@ export const loginUser = async (
     const loginUser = await userRepo.findOneBy({ email: user.email });
 
     //validating if the email entered is registered
-    if (!loginUser) throw "El usuario no existe";
+    if (!loginUser) res.status(400).json({ error: "El usuario no existe" });
 
     //comparing password entered with password registered
     const isValidPass = comparePass(user.password, loginUser.password);
@@ -65,6 +65,7 @@ export const loginUser = async (
 
     //creating token payload
     const token = await createJwt(verifiedUser);
+
     return res.json({ ok: true, token, msg: "logged", loginUser });
   } catch (error) {
     return res.json({ ok: false, msg: error });

@@ -14,7 +14,7 @@ const router = Router();
 
 router.post("/register", schemaValidator(registerSchema), registerUser);
 router.post("/login", schemaValidator(loginSchema), loginUser);
-router.get("/", revToken, validateAdmin, readUsers);
+router.get("/", readUsers);
 router.get("/:id", revToken, validateAdmin, readUserById);
 router.put("/update", revToken, schemaValidator(userSchema), updateUserById);
 router.delete("/delete/:id", revToken, validateAdmin, deleteUserById);

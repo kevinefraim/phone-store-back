@@ -8,9 +8,7 @@ export const schemaValidator =
       schema.parse(req.body);
     } catch (error) {
       if (error instanceof ZodError) {
-        return res.json({ error: error.flatten().fieldErrors });
-      } else {
-        res.json({ ok: false, msg: error });
+        return res.json({ ok: "false", errors: error.flatten().fieldErrors });
       }
     }
     next();
