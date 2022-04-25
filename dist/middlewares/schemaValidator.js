@@ -8,10 +8,7 @@ const schemaValidator = (schema) => (req, res, next) => {
     }
     catch (error) {
         if (error instanceof zod_1.ZodError) {
-            return res.json({ error: error.flatten().fieldErrors });
-        }
-        else {
-            res.json({ ok: false, msg: error });
+            return res.json({ ok: "false", errors: error.flatten().fieldErrors });
         }
     }
     next();

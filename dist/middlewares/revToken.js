@@ -17,10 +17,10 @@ const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 //revalidating token and creating a new one
 const revToken = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const token = req.header("x-token");
+    if (!token)
+        return res.status(401).json({ ok: false, msg: "no está autorizado" });
     try {
-        if (!token)
-            return res.status(401).json({ ok: false, msg: "no está autorizado" });
-        const user = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET_SEED, (err, decoded) => {
+        const validToken = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET_SEED, (err, decoded) => {
             if (err) {
                 throw "token expirado";
             }

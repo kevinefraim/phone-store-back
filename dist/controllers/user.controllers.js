@@ -49,7 +49,7 @@ const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const loginUser = yield userRepo.findOneBy({ email: user.email });
         //validating if the email entered is registered
         if (!loginUser)
-            throw "El usuario no existe";
+            res.status(400).json({ error: "El usuario no existe" });
         //comparing password entered with password registered
         const isValidPass = (0, cryptPass_1.comparePass)(user.password, loginUser.password);
         if (!isValidPass)
