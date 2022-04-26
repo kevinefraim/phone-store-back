@@ -27,7 +27,7 @@ const getPhones = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         return res.send({ phones });
     }
     catch (error) {
-        return res.json({ ok: false, msg: error });
+        res.status(400).json({ ok: false, msg: error });
     }
 });
 exports.getPhones = getPhones;
@@ -43,7 +43,7 @@ const getPhoneById = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         return res.send({ phone });
     }
     catch (error) {
-        return res.json({ ok: false, msg: error });
+        res.status(400).json({ ok: false, msg: error });
     }
 });
 exports.getPhoneById = getPhoneById;
@@ -81,7 +81,7 @@ const createPhone = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         return res.status(200).send({ ok: true, newPhone });
     }
     catch (error) {
-        res.json({ ok: false, msg: error });
+        res.status(400).json({ ok: false, msg: error });
     }
 });
 exports.createPhone = createPhone;
@@ -105,7 +105,7 @@ const updatePhone = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         return res.send({ newUpdatedPhone });
     }
     catch (error) {
-        return res.json({ ok: false, msg: error });
+        res.status(400).json({ ok: false, msg: error });
     }
 });
 exports.updatePhone = updatePhone;
@@ -123,7 +123,7 @@ const deletePhone = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         });
     }
     catch (error) {
-        return res.json({ ok: false, msg: error });
+        res.status(400).json({ ok: false, msg: error });
     }
 });
 exports.deletePhone = deletePhone;

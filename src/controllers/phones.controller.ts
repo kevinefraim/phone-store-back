@@ -22,7 +22,7 @@ export const getPhones = async (
 
     return res.send({ phones });
   } catch (error) {
-    return res.json({ ok: false, msg: error });
+    res.status(400).json({ ok: false, msg: error });
   }
 };
 
@@ -40,7 +40,7 @@ export const getPhoneById = async (
     idValidation(phone);
     return res.send({ phone });
   } catch (error) {
-    return res.json({ ok: false, msg: error });
+    res.status(400).json({ ok: false, msg: error });
   }
 };
 
@@ -84,7 +84,7 @@ export const createPhone = async (
 
     return res.status(200).send({ ok: true, newPhone });
   } catch (error) {
-    res.json({ ok: false, msg: error });
+    res.status(400).json({ ok: false, msg: error });
   }
 };
 
@@ -110,7 +110,7 @@ export const updatePhone = async (req: Request, res: Response) => {
 
     return res.send({ newUpdatedPhone });
   } catch (error) {
-    return res.json({ ok: false, msg: error });
+    res.status(400).json({ ok: false, msg: error });
   }
 };
 
@@ -131,6 +131,6 @@ export const deletePhone = async (
       item: deletedPhone,
     });
   } catch (error) {
-    return res.json({ ok: false, msg: error });
+    res.status(400).json({ ok: false, msg: error });
   }
 };
