@@ -35,7 +35,7 @@ export const registerUser = async (
 
     return res.json({ ok: true, token, user: newUser, msg: "Usuario creado" });
   } catch (error) {
-    return res.json({ ok: false, msg: error });
+    return res.status(400).json({ ok: false, msg: error });
   }
 };
 
@@ -51,7 +51,8 @@ export const loginUser = async (
     const loginUser = await userRepo.findOneBy({ email: user.email });
 
     //validating if the email entered is registered
-    if (!loginUser) res.status(400).json({ error: "El usuario no existe" });
+    if (!loginUser)
+      res.status(400).json({ ok: false, msg: "El usuario no existe" });
 
     //comparing password entered with password registered
     const isValidPass = comparePass(user.password, loginUser.password);
@@ -140,6 +141,19 @@ export const deleteUserById = async (
 
       item: deletedUser,
     });
+  } catch (error) {
+    return res.json({ ok: false, msg: error });
+  }
+};
+
+export const reLogUser = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
+  try {
+    const { user } = res.locals;
+    const loggedUser = await userRepo.findOneBy({ id: user.id });
+    return res.status(200).json({ ok: true, user: loggedUser });
   } catch (error) {
     return res.json({ ok: false, msg: error });
   }

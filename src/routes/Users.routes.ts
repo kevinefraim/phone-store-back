@@ -5,6 +5,7 @@ import {
   readUserById,
   readUsers,
   registerUser,
+  reLogUser,
   updateUserById,
 } from "../controllers/user.controllers";
 import { revToken, schemaValidator, validateAdmin } from "../middlewares";
@@ -14,6 +15,7 @@ const router = Router();
 
 router.post("/register", schemaValidator(registerSchema), registerUser);
 router.post("/login", schemaValidator(loginSchema), loginUser);
+router.get("/relog", revToken, reLogUser);
 router.get("/", readUsers);
 router.get("/:id", revToken, validateAdmin, readUserById);
 router.put("/update", revToken, schemaValidator(userSchema), updateUserById);

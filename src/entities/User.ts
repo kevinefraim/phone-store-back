@@ -23,7 +23,7 @@ export class User {
   })
   isAdmin: boolean;
 
-  @OneToMany(() => CartItem, (cartItem) => cartItem.user)
+  @OneToMany(() => CartItem, (cartItem) => cartItem.user, { cascade: true })
   cartItem: CartItem[];
 
   @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
