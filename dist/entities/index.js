@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Cart = exports.CartItem = exports.User = exports.Brand = exports.Phone = void 0;
+exports.Messages = exports.Cart = exports.CartItem = exports.User = exports.Brand = exports.Phone = void 0;
 var Phone_1 = require("./Phone");
 Object.defineProperty(exports, "Phone", { enumerable: true, get: function () { return Phone_1.Phone; } });
 var Brand_1 = require("./Brand");
@@ -11,3 +11,5 @@ var CartItem_1 = require("./CartItem");
 Object.defineProperty(exports, "CartItem", { enumerable: true, get: function () { return CartItem_1.CartItem; } });
 var Cart_1 = require("./Cart");
 Object.defineProperty(exports, "Cart", { enumerable: true, get: function () { return Cart_1.Cart; } });
+var Messages_1 = require("./Messages");
+Object.defineProperty(exports, "Messages", { enumerable: true, get: function () { return Messages_1.Messages; } });

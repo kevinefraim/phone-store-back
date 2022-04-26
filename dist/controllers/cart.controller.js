@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createCart = exports.getCart = void 0;
+exports.getCartById = exports.createCart = exports.getCart = void 0;
 const db_1 = require("../config/db");
 const entities_1 = require("../entities");
 const cartRepo = db_1.AppDataSource.getRepository(entities_1.Cart);
@@ -36,3 +36,15 @@ const createCart = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     }
 });
 exports.createCart = createCart;
+//get cart by ID
+const getCartById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { cartId } = req.params;
+    try {
+        const cart = yield cartRepo.find({ where: { id: +cartId } });
+        return res.status(200).json({ ok: true, cart });
+    }
+    catch (error) {
+        return res.json({ ok: false, msg: error });
+    }
+});
+exports.getCartById = getCartById;

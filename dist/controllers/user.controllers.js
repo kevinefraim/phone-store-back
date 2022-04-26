@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteUserById = exports.updateUserById = exports.readUserById = exports.readUsers = exports.loginUser = exports.registerUser = void 0;
+exports.reLogUser = exports.deleteUserById = exports.updateUserById = exports.readUserById = exports.readUsers = exports.loginUser = exports.registerUser = void 0;
 const db_1 = require("../config/db");
 const entities_1 = require("../entities");
 const createJwt_1 = require("../helpers/createJwt");
@@ -36,7 +36,7 @@ const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         return res.json({ ok: true, token, user: newUser, msg: "Usuario creado" });
     }
     catch (error) {
-        return res.json({ ok: false, msg: error });
+        return res.status(400).json({ ok: false, msg: error });
     }
 });
 exports.registerUser = registerUser;
@@ -49,7 +49,7 @@ const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const loginUser = yield userRepo.findOneBy({ email: user.email });
         //validating if the email entered is registered
         if (!loginUser)
-            res.status(400).json({ error: "El usuario no existe" });
+            res.status(400).json({ ok: false, msg: "El usuario no existe" });
         //comparing password entered with password registered
         const isValidPass = (0, cryptPass_1.comparePass)(user.password, loginUser.password);
         if (!isValidPass)
@@ -127,3 +127,14 @@ const deleteUserById = (req, res) => __awaiter(void 0, void 0, void 0, function*
     }
 });
 exports.deleteUserById = deleteUserById;
+const reLogUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { user } = res.locals;
+        const loggedUser = yield userRepo.findOneBy({ id: user.id });
+        return res.status(200).json({ ok: true, user: loggedUser });
+    }
+    catch (error) {
+        return res.json({ ok: false, msg: error });
+    }
+});
+exports.reLogUser = reLogUser;

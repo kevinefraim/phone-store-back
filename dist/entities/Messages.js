@@ -9,39 +9,31 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CartItem = void 0;
+exports.Messages = void 0;
 const typeorm_1 = require("typeorm");
-const entities_1 = require("../entities");
-let CartItem = class CartItem {
+let Messages = class Messages {
 };
 __decorate([
     (0, typeorm_1.PrimaryGeneratedColumn)(),
     __metadata("design:type", Number)
-], CartItem.prototype, "id", void 0);
+], Messages.prototype, "id", void 0);
 __decorate([
-    (0, typeorm_1.ManyToOne)(() => entities_1.Phone, (phone) => phone.item),
-    (0, typeorm_1.JoinColumn)(),
-    __metadata("design:type", entities_1.Phone)
-], CartItem.prototype, "phone", void 0);
+    (0, typeorm_1.Column)(),
+    __metadata("design:type", String)
+], Messages.prototype, "fullName", void 0);
 __decorate([
-    (0, typeorm_1.ManyToOne)(() => entities_1.User, (user) => user.cartItem, { onDelete: "CASCADE" }),
-    (0, typeorm_1.JoinColumn)(),
-    __metadata("design:type", entities_1.User)
-], CartItem.prototype, "user", void 0);
-__decorate([
-    (0, typeorm_1.ManyToOne)(() => entities_1.Cart, (cart) => cart.item, { onDelete: "CASCADE" }),
-    (0, typeorm_1.JoinColumn)(),
-    __metadata("design:type", entities_1.Cart)
-], CartItem.prototype, "cart", void 0);
-__decorate([
-    (0, typeorm_1.Column)({ default: 1 }),
+    (0, typeorm_1.Column)(),
     __metadata("design:type", Number)
-], CartItem.prototype, "quantity", void 0);
+], Messages.prototype, "phoneNumber", void 0);
+__decorate([
+    (0, typeorm_1.Column)(),
+    __metadata("design:type", String)
+], Messages.prototype, "message", void 0);
 __decorate([
     (0, typeorm_1.Column)({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" }),
     __metadata("design:type", String)
-], CartItem.prototype, "created_at", void 0);
-CartItem = __decorate([
+], Messages.prototype, "created_at", void 0);
+Messages = __decorate([
     (0, typeorm_1.Entity)()
-], CartItem);
-exports.CartItem = CartItem;
+], Messages);
+exports.Messages = Messages;

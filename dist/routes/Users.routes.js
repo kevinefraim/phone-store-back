@@ -7,6 +7,7 @@ const schemas_1 = require("../schemas");
 const router = (0, express_1.Router)();
 router.post("/register", (0, middlewares_1.schemaValidator)(schemas_1.registerSchema), user_controllers_1.registerUser);
 router.post("/login", (0, middlewares_1.schemaValidator)(schemas_1.loginSchema), user_controllers_1.loginUser);
+router.get("/relog", middlewares_1.revToken, user_controllers_1.reLogUser);
 router.get("/", user_controllers_1.readUsers);
 router.get("/:id", middlewares_1.revToken, middlewares_1.validateAdmin, user_controllers_1.readUserById);
 router.put("/update", middlewares_1.revToken, (0, middlewares_1.schemaValidator)(schemas_1.userSchema), user_controllers_1.updateUserById);

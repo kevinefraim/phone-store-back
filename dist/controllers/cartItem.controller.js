@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateItemById = exports.deleteItemById = exports.createItem = exports.getItemById = exports.getItems = void 0;
+exports.getItemsByCart = exports.updateItemById = exports.deleteItemById = exports.createItem = exports.getItemById = exports.getItems = void 0;
 const db_1 = require("../config/db");
 const entities_1 = require("../entities");
 const existenceValidator_1 = require("../helpers/existenceValidator");
@@ -172,3 +172,23 @@ const updateItemById = (req, res) => __awaiter(void 0, void 0, void 0, function*
     }
 });
 exports.updateItemById = updateItemById;
+const getItemsByCart = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { cartId } = req.params;
+    const { user } = res.locals;
+    try {
+        const filteredItems = yield itemsRepo
+            .createQueryBuilder("items")
+            .leftJoinAndSelect("items.cart", "cart")
+            .leftJoinAndSelect("items.user", "user")
+            .leftJoinAndSelect("items.phone", "phone")
+            .where("items.user = :user", { user: user.id })
+            .andWhere("items.cart = :cart", { cart: cartId })
+            .getMany();
+        console.log(filteredItems);
+        return res.status(200).json({ ok: true, filteredItems });
+    }
+    catch (error) {
+        return res.json({ ok: false, msg: error });
+    }
+});
+exports.getItemsByCart = getItemsByCart;

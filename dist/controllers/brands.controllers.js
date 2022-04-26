@@ -42,6 +42,11 @@ exports.getBrandById = getBrandById;
 const createBrand = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const newBrand = req.body;
+        const brandExist = yield brandsRepo.find({
+            where: { name: newBrand.name },
+        });
+        if (brandExist)
+            throw "La marca ya existe";
         const brand = yield brandsRepo.save(newBrand);
         return res.status(200).send({ ok: true, brand });
     }
