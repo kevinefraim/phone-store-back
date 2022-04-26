@@ -199,13 +199,18 @@ export const getItemsByCart = async (
   res: Response
 ): Promise<Response> => {
   const { cartId } = req.params;
+  const { user } = res.locals;
   try {
     const filteredItems = await itemsRepo
       .createQueryBuilder("items")
       .leftJoinAndSelect("items.cart", "cart")
+      .leftJoinAndSelect("items.user", "user")
       .leftJoinAndSelect("items.phone", "phone")
-      .where("items.cart = :cart", { cart: cartId })
+      .where("items.user = :user", { user: user.id })
+      .andWhere("items.cart = :cart", { cart: cartId })
       .getMany();
+    console.log(filteredItems);
+
     return res.status(200).json({ ok: true, filteredItems });
   } catch (error) {
     return res.json({ ok: false, msg: error });

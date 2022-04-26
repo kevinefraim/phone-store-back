@@ -8,7 +8,7 @@ import {
   updateItemById,
 } from "../controllers/cartItem.controller";
 import { revToken, schemaValidator } from "../middlewares";
-import { cartItemSchema } from "../schemas/cartItemSchema";
+import { cartItemSchema, updateItemSchema } from "../schemas";
 
 const router = Router();
 
@@ -17,7 +17,7 @@ router.get("/", getItems);
 router.get("/:id", getItemById);
 router.get("/cart/:cartId", getItemsByCart);
 router.post("/create", schemaValidator(cartItemSchema), createItem);
-router.put("/update/:id", schemaValidator(cartItemSchema), updateItemById);
+router.put("/update/:id", schemaValidator(updateItemSchema), updateItemById);
 router.delete("/delete/:id", deleteItemById);
 
 export default router;
