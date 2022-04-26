@@ -4,6 +4,7 @@ import {
   deleteItemById,
   getItemById,
   getItems,
+  getItemsByCart,
   updateItemById,
 } from "../controllers/cartItem.controller";
 import { revToken, schemaValidator } from "../middlewares";
@@ -14,6 +15,7 @@ const router = Router();
 router.use(revToken);
 router.get("/", getItems);
 router.get("/:id", getItemById);
+router.get("/cart/:cartId", getItemsByCart);
 router.post("/create", schemaValidator(cartItemSchema), createItem);
 router.put("/update/:id", schemaValidator(cartItemSchema), updateItemById);
 router.delete("/delete/:id", deleteItemById);

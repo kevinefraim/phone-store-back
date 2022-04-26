@@ -27,3 +27,15 @@ export const createCart = async (req: Request, res: Response) => {
     return res.json({ ok: false, msg: error });
   }
 };
+
+//get cart by ID
+export const getCartById = async (req: Request, res: Response) => {
+  const { cartId } = req.params;
+  try {
+    const cart = await cartRepo.find({ where: { id: +cartId } });
+
+    return res.status(200).json({ ok: true, cart });
+  } catch (error) {
+    return res.json({ ok: false, msg: error });
+  }
+};

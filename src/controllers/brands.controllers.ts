@@ -40,6 +40,10 @@ export const createBrand = async (
 ): Promise<Response> => {
   try {
     const newBrand = req.body;
+    const brandExist = await brandsRepo.find({
+      where: { name: newBrand.name },
+    });
+    if (brandExist) throw "La marca ya existe";
 
     const brand = await brandsRepo.save(newBrand);
 

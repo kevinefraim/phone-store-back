@@ -193,3 +193,21 @@ export const updateItemById = async (
     return res.json({ ok: false, msg: error });
   }
 };
+
+export const getItemsByCart = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
+  const { cartId } = req.params;
+  try {
+    const filteredItems = await itemsRepo
+      .createQueryBuilder("items")
+      .leftJoinAndSelect("items.cart", "cart")
+      .leftJoinAndSelect("items.phone", "phone")
+      .where("items.cart = :cart", { cart: cartId })
+      .getMany();
+    return res.status(200).json({ ok: true, filteredItems });
+  } catch (error) {
+    return res.json({ ok: false, msg: error });
+  }
+};
