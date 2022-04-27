@@ -1,13 +1,26 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from "typeorm";
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  OneToMany,
+  JoinColumn,
+  OneToOne,
+  BaseEntity,
+} from "typeorm";
 import { CartItem } from "../entities";
+import { User } from "./User";
 
 @Entity()
-export class Cart {
+export class Cart extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @OneToMany(() => CartItem, (item) => item.id, { cascade: true })
-  item: CartItem[];
+  @OneToMany(() => CartItem, (cartItem) => cartItem.id, { cascade: true })
+  cartItem: CartItem[];
+
+  @OneToOne(() => User, { onDelete: "CASCADE" })
+  @JoinColumn()
+  user: User;
 
   @Column({ default: 0 })
   total: number;

@@ -1,5 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from "typeorm";
 import { CartItem } from "../entities";
+import { Cart } from "./Cart";
 
 @Entity()
 export class User {

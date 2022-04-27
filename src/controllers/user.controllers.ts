@@ -1,12 +1,13 @@
 import { Request, Response } from "express";
 import { AppDataSource } from "../config/db";
-import { User } from "../entities";
+import { Cart, User } from "../entities";
 import { createJwt } from "../helpers/createJwt";
 import { comparePass, cryptPass } from "../helpers/cryptPass";
 import { idValidation } from "../helpers/validations";
 import { userTokenPayload } from "../ts/types";
 
 const userRepo = AppDataSource.getRepository(User);
+const cartRepo = AppDataSource.getRepository(Cart);
 
 //register a new user
 export const registerUser = async (
@@ -32,6 +33,11 @@ export const registerUser = async (
 
     //creating token payload
     const token = await createJwt(verifiedUser);
+
+    const newCart = {
+      user: newUser.id,
+    };
+    await cartRepo.save(newCart);
 
     return res.json({ ok: true, token, user: newUser, msg: "Usuario creado" });
   } catch (error) {

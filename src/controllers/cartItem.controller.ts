@@ -68,28 +68,31 @@ export const createItem = async (
   res: Response
 ): Promise<Response> => {
   try {
-    const { phone, cart } = req.body;
+    const { phone } = req.body;
     const { user } = res.locals;
-    const cartExists = await cartRepo.findOneBy({ id: cart });
+    const cart: any = await cartRepo.findOne({ where: { user: user.id } });
     const phoneExists = await phoneRepo.findOneBy({ id: phone });
 
-    existenceValidator(cartExists, "cart");
+    existenceValidator(cart, "cart");
     existenceValidator(phoneExists, "phone");
 
-    const item = await itemsRepo.save({ phone, user: user.id, cart });
+    const item = await itemsRepo.save({
+      phone,
+      user: user.id,
+      cart: cart.id,
+    });
 
     //selecting phone by phone id passed in req.body
     const { price } = await AppDataSource.getRepository(Phone).findOneBy({
       id: phone,
     });
 
-    //adding total
-    cartExists.total += price * +item.quantity;
+    // adding total
+    cart.total += price * +item.quantity;
 
-    //saving total in cart
-    await cartRepo.save(cartExists);
+    // saving total in cart
+    await cartRepo.save(cart);
 
-    //return new item
     const newItem = await itemsRepo.findOne({
       where: { id: item.id },
       relations: { cart: true, phone: true },
