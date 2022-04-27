@@ -24,8 +24,11 @@ export class CartItem {
   @JoinColumn()
   cart: Cart;
 
-  @Column({ default: 1 })
+  @Column()
   quantity: Number;
+
+  @Column()
+  subTotal: Number;
 
   @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
   created_at: string;

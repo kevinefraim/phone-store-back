@@ -68,14 +68,13 @@ export const createItem = async (
   res: Response
 ): Promise<Response> => {
   try {
-    const { phone } = req.body;
+    const { phone, quantity } = req.body;
     const { user } = res.locals;
     const cart: any = await cartRepo
       .createQueryBuilder("cart")
       .leftJoinAndSelect("cart.user", "user")
       .where("cart.user = :user", { user: user.id })
       .getOne();
-    console.log(cart);
 
     const phoneExists = await phoneRepo.findOneBy({ id: phone });
 
@@ -84,11 +83,13 @@ export const createItem = async (
 
     const item = await itemsRepo.save({
       phone,
+      quantity,
       user: user.id,
       cart: cart.id,
+      subTotal: phoneExists.price * quantity,
     });
 
-    //selecting phone by phone id passed in req.body
+    // selecting phone by phone id passed in req.body
     const { price } = await AppDataSource.getRepository(Phone).findOneBy({
       id: phone,
     });
@@ -137,7 +138,7 @@ export const deleteItemById = async (
     const cartExists = await cartRepo.findOneBy({ id: deletedItem.cart.id });
     idValidation(cartExists);
 
-    cartExists.total -= deletedItem.phone.price * +deletedItem.quantity;
+    cartExists.total -= +deletedItem.subTotal * +deletedItem.quantity;
 
     //remove selected item
     await itemsRepo.remove(deletedItem);
@@ -187,7 +188,7 @@ export const updateItemById = async (
       },
     });
 
-    cart.total = item.phone.price * +item.quantity;
+    cart.total = +item.subTotal * +item.quantity;
 
     await cartRepo.save(cart);
 
