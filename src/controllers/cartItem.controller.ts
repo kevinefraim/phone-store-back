@@ -70,7 +70,13 @@ export const createItem = async (
   try {
     const { phone } = req.body;
     const { user } = res.locals;
-    const cart: any = await cartRepo.findOne({ where: { user: user.id } });
+    const cart: any = await cartRepo
+      .createQueryBuilder("cart")
+      .leftJoinAndSelect("cart.user", "user")
+      .where("cart.user = :user", { user: user.id })
+      .getOne();
+    console.log(cart);
+
     const phoneExists = await phoneRepo.findOneBy({ id: phone });
 
     existenceValidator(cart, "cart");
@@ -89,7 +95,7 @@ export const createItem = async (
 
     // adding total
     cart.total += price * +item.quantity;
-
+    cart.quantity += 1;
     // saving total in cart
     await cartRepo.save(cart);
 
@@ -201,16 +207,17 @@ export const getItemsByCart = async (
   req: Request,
   res: Response
 ): Promise<Response> => {
-  const { cartId } = req.params;
   const { user } = res.locals;
   try {
+    const userCart = await cartRepo.findOne({ where: { user: user.id } });
+
     const filteredItems = await itemsRepo
-      .createQueryBuilder("items")
-      .leftJoinAndSelect("items.cart", "cart")
-      .leftJoinAndSelect("items.user", "user")
-      .leftJoinAndSelect("items.phone", "phone")
-      .where("items.user = :user", { user: user.id })
-      .andWhere("items.cart = :cart", { cart: cartId })
+      .createQueryBuilder("cartItems")
+      .leftJoinAndSelect("cartItems.cart", "cart")
+      .leftJoinAndSelect("cartItems.user", "user")
+      .leftJoinAndSelect("cartItems.phone", "phone")
+      .where("cartItems.user = :user", { user: user.id })
+      .andWhere("cartItems.cart = :cart", { cart: userCart.id })
       .getMany();
     console.log(filteredItems);
 

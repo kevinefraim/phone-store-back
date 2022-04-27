@@ -1,14 +1,9 @@
 import { Router } from "express";
-import {
-  createCart,
-  getCart,
-  getCartById,
-} from "../controllers/cart.controller";
+import { getCartById } from "../controllers/cart.controller";
+import { revToken } from "../middlewares";
 
 const router = Router();
 
-router.get("/", getCart);
-router.get("/:cartId", getCartById);
-router.post("/create", createCart);
+router.get("/", revToken, getCartById);
 
 export default router;

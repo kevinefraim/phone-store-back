@@ -5,18 +5,17 @@ import {
   OneToMany,
   JoinColumn,
   OneToOne,
-  BaseEntity,
 } from "typeorm";
 import { CartItem } from "../entities";
 import { User } from "./User";
 
 @Entity()
-export class Cart extends BaseEntity {
+export class Cart {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @OneToMany(() => CartItem, (cartItem) => cartItem.id, { cascade: true })
-  cartItem: CartItem[];
+  @OneToMany(() => CartItem, (item) => item.cart, { cascade: true })
+  item: CartItem[];
 
   @OneToOne(() => User, { onDelete: "CASCADE" })
   @JoinColumn()
@@ -24,6 +23,9 @@ export class Cart extends BaseEntity {
 
   @Column({ default: 0 })
   total: number;
+
+  @Column({ default: 0 })
+  quantity: number;
 
   @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
   created_at: string;

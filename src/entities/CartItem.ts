@@ -4,12 +4,11 @@ import {
   PrimaryGeneratedColumn,
   JoinColumn,
   ManyToOne,
-  BaseEntity,
 } from "typeorm";
 import { Phone, Cart, User } from "../entities";
 
 @Entity()
-export class CartItem extends BaseEntity {
+export class CartItem {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -17,11 +16,11 @@ export class CartItem extends BaseEntity {
   @JoinColumn()
   phone: Phone;
 
-  @ManyToOne(() => User, (user) => user.id, { onDelete: "CASCADE" })
+  @ManyToOne(() => User, (user) => user.item, { onDelete: "CASCADE" })
   @JoinColumn()
   user: User;
 
-  @ManyToOne(() => Cart, (cart) => cart.id, { onDelete: "CASCADE" })
+  @ManyToOne(() => Cart, (cart) => cart.item, { onDelete: "CASCADE" })
   @JoinColumn()
   cart: Cart;
 

@@ -1,6 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from "typeorm";
 import { CartItem } from "../entities";
-import { Cart } from "./Cart";
 
 @Entity()
 export class User {
@@ -24,8 +23,8 @@ export class User {
   })
   isAdmin: boolean;
 
-  @OneToMany(() => CartItem, (cartItem) => cartItem.user, { cascade: true })
-  cartItem: CartItem[];
+  @OneToMany(() => CartItem, (item) => item.user, { cascade: true })
+  item: CartItem[];
 
   @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
   created_at: string;
