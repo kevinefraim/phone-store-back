@@ -86,8 +86,9 @@ export const createItem = async (
       quantity,
       user: user.id,
       cart: cart.id,
-      subTotal: phoneExists.price * quantity,
+      subTotal: phoneExists.price,
     });
+    console.log(item.subTotal);
 
     // selecting phone by phone id passed in req.body
     const { price } = await AppDataSource.getRepository(Phone).findOneBy({
@@ -133,12 +134,16 @@ export const deleteItemById = async (
     });
     idValidation(deletedItem);
     userValidation(user.id, deletedItem.user.id);
+    console.log(deletedItem);
 
-    //cart that contains the item
+    // //cart that contains the item
     const cartExists = await cartRepo.findOneBy({ id: deletedItem.cart.id });
     idValidation(cartExists);
+    // console.log(deletedItem.subTotal);
 
-    cartExists.total -= +deletedItem.subTotal * +deletedItem.quantity;
+    cartExists.total = cartExists.total - +deletedItem.subTotal;
+    console.log(cartExists.total);
+
     cartExists.quantity -= 1;
     //remove selected item
     await itemsRepo.remove(deletedItem);
@@ -151,6 +156,7 @@ export const deleteItemById = async (
       message: `Item ${id} deleted`,
       item: deletedItem,
     });
+    return res.json({ ok: true });
   } catch (error) {
     return res.status(200).json({ ok: false, msg: error });
   }
@@ -165,6 +171,7 @@ export const updateItemById = async (
     const id = +req.params.id;
     const { user } = res.locals;
     const { quantity } = req.body;
+    const item1 = await itemsRepo.findOne({ where: { id: id } });
     const item = await itemsRepo.findOne({
       where: {
         id: id,
@@ -180,17 +187,25 @@ export const updateItemById = async (
     idValidation(item);
 
     item.quantity = quantity;
+    item.subTotal = item.phone.price * quantity;
+
     await itemsRepo.save(item);
+    console.log(item);
 
-    const cart = await cartRepo.findOne({
-      where: {
-        id: item.cart.id,
-      },
-    });
+    const userCart = await cartRepo
+      .createQueryBuilder("cart")
+      .leftJoinAndSelect("cart.user", "user")
+      .leftJoinAndSelect("cart.item", "items")
+      .where("cart.user = :user", { user: user.id })
+      .getOne();
 
-    cart.total = +item.subTotal * +item.quantity;
+    //calculo total carrito
+    userCart.total = userCart.item.reduce(
+      (subTotal, item) => subTotal + +item.subTotal,
+      0
+    );
 
-    await cartRepo.save(cart);
+    await cartRepo.save(userCart);
 
     //return item updated
     const newItem = await itemsRepo.findOne({
@@ -199,34 +214,6 @@ export const updateItemById = async (
     });
 
     return res.send({ newItem });
-  } catch (error) {
-    return res.status(200).json({ ok: false, msg: error });
-  }
-};
-
-export const getItemsByCart = async (
-  req: Request,
-  res: Response
-): Promise<Response> => {
-  const { user } = res.locals;
-  try {
-    const userCart = await cartRepo
-      .createQueryBuilder("cart")
-      .leftJoinAndSelect("cart.user", "user")
-      .where("cart.user = :user", { user: user.id })
-      .getOne();
-
-    const filteredItems = await itemsRepo
-      .createQueryBuilder("cartItems")
-      .leftJoinAndSelect("cartItems.cart", "cart")
-      .leftJoinAndSelect("cartItems.user", "user")
-      .leftJoinAndSelect("cartItems.phone", "phone")
-      .where("cartItems.user = :user", { user: user.id })
-      .andWhere("cartItems.cart = :cart", { cart: userCart.id })
-      .getMany();
-    console.log(filteredItems);
-
-    return res.status(200).json({ ok: true, filteredItems });
   } catch (error) {
     return res.status(200).json({ ok: false, msg: error });
   }

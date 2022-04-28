@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { AppDataSource } from "../config/db";
-import { Cart } from "../entities";
+import { Cart, CartItem } from "../entities";
 
 const cartRepo = AppDataSource.getRepository(Cart);
 
@@ -11,6 +11,8 @@ export const getCartById = async (req: Request, res: Response) => {
     const cart = await cartRepo
       .createQueryBuilder("cart")
       .leftJoinAndSelect("cart.user", "user")
+      .leftJoinAndSelect("cart.item", "items")
+      .leftJoinAndSelect("items.phone", "phone")
       .where("cart.user = :user", { user: user.id })
       .getOne();
 

@@ -43,13 +43,13 @@ export const createBrand = async (
     const brandExist = await brandsRepo.find({
       where: { name: newBrand.name },
     });
-    if (brandExist) throw "La marca ya existe";
+    // if (brandExist) throw "La marca ya existe";
 
     const brand = await brandsRepo.save(newBrand);
 
     return res.status(200).send({ ok: true, brand });
   } catch (error) {
-    return res.json({ ok: false, msg: error });
+    return res.status(400).json({ ok: false, msg: error });
   }
 };
 
