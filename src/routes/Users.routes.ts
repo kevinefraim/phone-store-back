@@ -1,6 +1,7 @@
 import { Router } from "express";
 import {
   deleteUserById,
+  loginAdmin,
   loginUser,
   readUserById,
   readUsers,
@@ -15,6 +16,7 @@ const router = Router();
 
 router.post("/register", schemaValidator(registerSchema), registerUser);
 router.post("/login", schemaValidator(loginSchema), loginUser);
+router.post("/login/admin", loginAdmin);
 router.get("/relog", revToken, reLogUser);
 router.get("/", readUsers);
 router.get("/:id", revToken, validateAdmin, readUserById);

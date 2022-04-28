@@ -75,7 +75,44 @@ export const loginUser = async (
 
     return res.json({ ok: true, token, msg: "logged", loginUser });
   } catch (error) {
-    return res.json({ ok: false, msg: error });
+    return res.status(400).json({ ok: false, msg: error });
+  }
+};
+
+//login admin user
+
+export const loginAdmin = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
+  //user that tries to login
+  const { email, password } = req.body;
+  try {
+    //user that exists with email
+    const loginUser = await userRepo.findOneBy({ email: email });
+    //validating if the email entered is registered
+    if (!loginUser)
+      res.status(400).json({ ok: false, msg: "El usuario no existe" });
+
+    //validating if user is admin
+    if (!loginUser.isAdmin) throw "Usuario incorrecto";
+
+    //comparing password entered with password registered
+    const isValidPass = comparePass(password, loginUser.password);
+    if (!isValidPass) throw "Los datos son incorrectos";
+
+    //creating token payload with ID and Email
+    const verifiedUser: userTokenPayload = {
+      id: loginUser.id,
+      email: loginUser.email,
+    };
+
+    //creating token payload
+    const token = await createJwt(verifiedUser);
+
+    return res.json({ ok: true, token, msg: "logged", loginUser });
+  } catch (error) {
+    return res.status(400).json({ ok: false, msg: error });
   }
 };
 
@@ -89,7 +126,7 @@ export const readUsers = async (
 
     return res.send({ users });
   } catch (error) {
-    return res.json({ ok: false, msg: error });
+    return res.status(400).json({ ok: false, msg: error });
   }
 };
 
@@ -104,7 +141,7 @@ export const readUserById = async (
 
     return res.send({ users });
   } catch (error) {
-    return res.json({ ok: false, msg: error });
+    return res.status(400).json({ ok: false, msg: error });
   }
 };
 
@@ -127,7 +164,7 @@ export const updateUserById = async (
 
     return res.send({ newUpdatedUser });
   } catch (error) {
-    return res.json({ ok: false, msg: error });
+    return res.status(400).json({ ok: false, msg: error });
   }
 };
 
@@ -148,7 +185,7 @@ export const deleteUserById = async (
       item: deletedUser,
     });
   } catch (error) {
-    return res.json({ ok: false, msg: error });
+    return res.status(400).json({ ok: false, msg: error });
   }
 };
 
@@ -161,6 +198,6 @@ export const reLogUser = async (
     const loggedUser = await userRepo.findOneBy({ id: user.id });
     return res.status(200).json({ ok: true, user: loggedUser });
   } catch (error) {
-    return res.json({ ok: false, msg: error });
+    return res.status(400).json({ ok: false, msg: error });
   }
 };
