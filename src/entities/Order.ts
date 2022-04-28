@@ -2,24 +2,17 @@ import {
   Entity,
   Column,
   PrimaryGeneratedColumn,
+  OneToMany,
   JoinColumn,
-  ManyToOne,
+  OneToOne,
 } from "typeorm";
-import { Phone, Cart, User } from "../entities";
+import { CartItem } from "../entities";
+import { User } from "./User";
 
 @Entity()
-export class Messages {
+export class Order {
   @PrimaryGeneratedColumn()
   id: number;
-
-  @Column()
-  fullName: string;
-
-  @Column()
-  phoneNumber: string;
-
-  @Column()
-  message: string;
 
   @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
   created_at: string;

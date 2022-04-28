@@ -8,6 +8,7 @@ import brandsRouter from "./routes/Brands.routes";
 import usersRouter from "./routes/Users.routes";
 import itemsRouter from "./routes/CartItem.routes";
 import cartRouter from "./routes/Cart.routes";
+import msgRouter from "./routes/Messages.routes";
 
 config();
 
@@ -32,6 +33,7 @@ app.use("/brands", brandsRouter);
 app.use("/users", usersRouter);
 app.use("/items", itemsRouter);
 app.use("/cart", cartRouter);
+app.use("/message", msgRouter);
 app.get("/", (req, res) => res.send(`PhoneStore API - Kevin Efraim`));
 //initializing app in port
 app.listen(PORT, () => console.log(`Server on http://localhost:${PORT}`));
