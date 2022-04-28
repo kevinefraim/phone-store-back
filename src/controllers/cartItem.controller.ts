@@ -29,7 +29,7 @@ export const getItems = async (
 
     return res.send({ items });
   } catch (error) {
-    return res.json({ ok: false, msg: error });
+    return res.status(200).json({ ok: false, msg: error });
   }
 };
 
@@ -58,7 +58,7 @@ export const getItemById = async (
       item,
     });
   } catch (error) {
-    return res.json({ ok: false, msg: error });
+    return res.status(200).json({ ok: false, msg: error });
   }
 };
 
@@ -107,7 +107,7 @@ export const createItem = async (
 
     return res.status(200).send({ ok: true, newItem });
   } catch (error) {
-    return res.json({ ok: false, msg: error });
+    return res.status(200).json({ ok: false, msg: error });
   }
 };
 
@@ -139,7 +139,7 @@ export const deleteItemById = async (
     idValidation(cartExists);
 
     cartExists.total -= +deletedItem.subTotal * +deletedItem.quantity;
-
+    cartExists.quantity -= 1;
     //remove selected item
     await itemsRepo.remove(deletedItem);
 
@@ -152,7 +152,7 @@ export const deleteItemById = async (
       item: deletedItem,
     });
   } catch (error) {
-    return res.json({ ok: false, msg: error });
+    return res.status(200).json({ ok: false, msg: error });
   }
 };
 
@@ -200,7 +200,7 @@ export const updateItemById = async (
 
     return res.send({ newItem });
   } catch (error) {
-    return res.json({ ok: false, msg: error });
+    return res.status(200).json({ ok: false, msg: error });
   }
 };
 
@@ -210,7 +210,11 @@ export const getItemsByCart = async (
 ): Promise<Response> => {
   const { user } = res.locals;
   try {
-    const userCart = await cartRepo.findOne({ where: { user: user.id } });
+    const userCart = await cartRepo
+      .createQueryBuilder("cart")
+      .leftJoinAndSelect("cart.user", "user")
+      .where("cart.user = :user", { user: user.id })
+      .getOne();
 
     const filteredItems = await itemsRepo
       .createQueryBuilder("cartItems")
@@ -224,6 +228,29 @@ export const getItemsByCart = async (
 
     return res.status(200).json({ ok: true, filteredItems });
   } catch (error) {
-    return res.json({ ok: false, msg: error });
+    return res.status(200).json({ ok: false, msg: error });
+  }
+};
+
+export const deleteAllItems = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
+  const { user } = res.locals;
+  try {
+    const userCart = await cartRepo
+      .createQueryBuilder("cart")
+      .leftJoinAndSelect("cart.user", "user")
+      .where("cart.user = :user", { user: user.id })
+      .getOne();
+
+    const filteredItems = await itemsRepo
+      .createQueryBuilder("cartItems")
+      .leftJoinAndSelect("cartItems.user", "user")
+      .where("cartItems.user = :user", { user: user.id })
+      .getMany();
+    console.log(filteredItems);
+  } catch (error) {
+    return res.status(200).json({ ok: false, msg: error });
   }
 };

@@ -1,6 +1,7 @@
 import { Router } from "express";
 import {
   createItem,
+  deleteAllItems,
   deleteItemById,
   getItemById,
   getItems,
@@ -18,6 +19,7 @@ router.get("/item/:id", getItemById);
 router.get("/cart", getItemsByCart);
 router.post("/create", schemaValidator(cartItemSchema), createItem);
 router.put("/update/:id", schemaValidator(updateItemSchema), updateItemById);
-router.delete("/delete/:id", deleteItemById);
+router.delete("/delete/one/:id", deleteItemById);
+router.delete("/delete/all", deleteAllItems);
 
 export default router;
