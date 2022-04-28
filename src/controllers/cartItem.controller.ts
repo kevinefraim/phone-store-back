@@ -244,12 +244,20 @@ export const deleteAllItems = async (
       .where("cart.user = :user", { user: user.id })
       .getOne();
 
-    const filteredItems = await itemsRepo
-      .createQueryBuilder("cartItems")
-      .leftJoinAndSelect("cartItems.user", "user")
-      .where("cartItems.user = :user", { user: user.id })
-      .getMany();
-    console.log(filteredItems);
+    const deletedItem = await itemsRepo
+      .createQueryBuilder()
+      .delete()
+      .from(CartItem)
+      .where("user.id = :id", { id: user.id })
+      .execute();
+
+    //setting cart quantity to 0
+    userCart.quantity = 0;
+
+    //setting cart total to 0
+    userCart.total = 0;
+    await cartRepo.save(userCart);
+    return res.json({ ok: true, deletedItem });
   } catch (error) {
     return res.status(200).json({ ok: false, msg: error });
   }
