@@ -4,6 +4,7 @@ import { Brand, Image, Phone } from "../entities";
 import { existenceValidator } from "../helpers/existenceValidator";
 import { idValidation } from "../helpers/validations";
 import { v2 as cloudinary } from "cloudinary";
+import fs from "fs-extra";
 
 const phonesRepo = AppDataSource.getRepository(Phone);
 const brandRepo = AppDataSource.getRepository(Brand);
@@ -98,7 +99,7 @@ export const createPhone = async (
       where: { id: phone.id },
       relations: { brand: true, image: true },
     });
-
+    await fs.unlink(path);
     return res.status(200).send({ ok: true, newPhone });
   } catch (error) {
     res.status(400).json({ ok: false, msg: error });
