@@ -17,16 +17,12 @@ router.get("/:id", getPhoneById);
 router.get("/brand/:brand", getPhoneByBrand);
 router.post(
   "/create",
-  // revToken,
-  // validateAdmin,
+  revToken,
+  validateAdmin,
   schemaValidator(phoneSchema),
   createPhone
 );
 router.put("/update/:id", revToken, validateAdmin, updatePhone);
-router.delete(
-  "/delete/:id",
-  //  revToken, validateAdmin,
-  deletePhone
-);
+router.delete("/delete/:id", revToken, validateAdmin, deletePhone);
 
 export default router;

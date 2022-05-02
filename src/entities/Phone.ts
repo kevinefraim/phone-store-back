@@ -5,8 +5,10 @@ import {
   ManyToOne,
   JoinColumn,
   OneToMany,
+  OneToOne,
 } from "typeorm";
 import { Brand, CartItem } from "../entities";
+import { Image } from "./Image";
 
 @Entity()
 export class Phone {
@@ -26,11 +28,12 @@ export class Phone {
   @Column()
   price: number;
 
-  @Column()
-  stock: number;
+  @OneToOne(() => Image, (image) => image.phone)
+  @JoinColumn()
+  image: Image;
 
   @Column()
-  image: string;
+  stock: number;
 
   @OneToMany(() => CartItem, (item) => item.id)
   item: CartItem[];

@@ -1,12 +1,13 @@
 import { Request, Response } from "express";
-import { z, ZodError } from "zod";
 import { AppDataSource } from "../config/db";
-import { Brand, Phone } from "../entities";
+import { Brand, Image, Phone } from "../entities";
 import { existenceValidator } from "../helpers/existenceValidator";
 import { idValidation } from "../helpers/validations";
+import { v2 as cloudinary } from "cloudinary";
 
 const phonesRepo = AppDataSource.getRepository(Phone);
 const brandRepo = AppDataSource.getRepository(Brand);
+const imgRepo = AppDataSource.getRepository(Image);
 
 //Read ALL the phones
 export const getPhones = async (
@@ -17,6 +18,7 @@ export const getPhones = async (
     const phones = await phonesRepo.find({
       relations: {
         brand: true,
+        image: true,
       },
     });
 
@@ -35,7 +37,7 @@ export const getPhoneById = async (
     const id = +req.params.id;
     const phone = await phonesRepo.findOne({
       where: { id: id },
-      relations: { brand: true },
+      relations: { brand: true, image: true },
     });
     idValidation(phone);
     return res.send({ phone });
@@ -52,6 +54,7 @@ export const getPhoneByBrand = async (req: Request, res: Response) => {
     const filteredPhones = await phonesRepo
       .createQueryBuilder("phones")
       .leftJoinAndSelect("phones.brand", "brand")
+      .leftJoinAndSelect("phones.image", "image")
       .where("brand.name = :brand", { brand: brand })
       .getMany();
     if (filteredPhones.length < 1)
@@ -67,19 +70,33 @@ export const createPhone = async (
   req: Request,
   res: Response
 ): Promise<Response> => {
+  console.log(req.file);
+
   try {
     const newData = req.body;
+    const { path } = req.file;
 
     const brandExists = await brandRepo.findOne({
       where: { id: newData.brand },
     });
     existenceValidator(brandExists, "brand");
 
-    const phone = await phonesRepo.save(newData);
+    newData.price = +newData.price;
+    newData.brand = +newData.brand;
+    newData.stock = +newData.stock;
+
+    const { url, public_id } = await cloudinary.uploader.upload(path);
+
+    const image = await imgRepo.save({
+      url,
+      public_id,
+    });
+
+    const phone = await phonesRepo.save({ ...newData, image: image.id });
 
     const newPhone = await phonesRepo.findOne({
       where: { id: phone.id },
-      relations: { brand: true },
+      relations: { brand: true, image: true },
     });
 
     return res.status(200).send({ ok: true, newPhone });
@@ -121,9 +138,19 @@ export const deletePhone = async (
 ): Promise<Response> => {
   try {
     const id = +req.params.id;
-    const deletedPhone = await phonesRepo.findOneBy({ id });
+    const deletedPhone = await phonesRepo.findOne({
+      where: { id },
+      relations: { image: true },
+    });
     idValidation(deletedPhone);
+
+    const imgDelete = await imgRepo.findOne({
+      where: { id: deletedPhone.image.id },
+    });
     await phonesRepo.remove(deletedPhone);
+    await cloudinary.uploader.destroy(imgDelete.public_id);
+    await imgRepo.remove(imgDelete);
+
     return res.send({
       ok: true,
       message: `Item ${id} deleted`,

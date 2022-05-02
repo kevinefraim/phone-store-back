@@ -1,7 +1,6 @@
 import { config } from "dotenv";
-import express from "express";
+import express, { Request } from "express";
 import cors from "cors";
-import cookieParser from "cookie-parser";
 import { dbConnection } from "./config/db";
 import phonesRouter from "./routes/Phones.routes";
 import brandsRouter from "./routes/Brands.routes";
@@ -9,11 +8,17 @@ import usersRouter from "./routes/Users.routes";
 import itemsRouter from "./routes/CartItem.routes";
 import cartRouter from "./routes/Cart.routes";
 import msgRouter from "./routes/Messages.routes";
+import multer from "multer";
+import path from "path";
+import { FileNameCallback } from "./ts/types";
+import { cloudinaryConfig } from "./config/cloudinary";
 
 config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+//middlewares
 
 app.use(
   cors({
@@ -22,7 +27,19 @@ app.use(
   })
 );
 app.use(express.json());
-app.use(cookieParser());
+
+const storage = multer.diskStorage({
+  destination: path.join(__dirname, "public/img/uploads"),
+  filename: (
+    req: Request,
+    file: Express.Multer.File,
+    callback: FileNameCallback
+  ): void => {
+    callback(null, new Date().getTime() + path.extname(file.originalname));
+  },
+});
+app.use(multer({ storage }).single("image"));
+cloudinaryConfig();
 
 //DB connection
 dbConnection();
