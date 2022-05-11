@@ -9,3 +9,4 @@ Tecnologies implemented:
 - Zod 
 - JWT
 - Cloudinary
+- Bcrypt
